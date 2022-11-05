@@ -1,29 +1,6 @@
 <template>
   <div class="principal">
-    <form @submit.prevent="funciono" class="form">
-      <div class="top-header">
-        <img src="" />
-        <span class="title">ClockSwitch</span>
-      </div>
-      <label class="form-label" for="#email">Usuario:</label>
-      <input
-        v-model="user"
-        class="form-input"
-        id="user"
-        required
-        placeholder="Nombre del usuario"
-      />
-      <label class="form-label" for="#password">Contraseña:</label>
-      <input
-        v-model="password"
-        class="form-input"
-        type="password"
-        id="password"
-        placeholder="Contraseña"
-      />
-      <input class="form-submit" type="submit" value="Login" />
-      <p v-if="error" class="error">Algo ha salido mal.</p>
-    </form>
+    <h1>Soy footer</h1>
   </div>
 </template>
 
