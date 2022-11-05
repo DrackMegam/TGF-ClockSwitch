@@ -1,0 +1,136 @@
+<template>
+  <div class="principal">
+    <form @submit.prevent="funciono" class="form">
+      <div class="top-header">
+        <img src="" />
+        <span class="title">ClockSwitch</span>
+      </div>
+      <label class="form-label" for="#email">Usuario:</label>
+      <input
+        v-model="user"
+        class="form-input"
+        id="user"
+        required
+        placeholder="Nombre del usuario"
+      />
+      <label class="form-label" for="#password">Contraseña:</label>
+      <input
+        v-model="password"
+        class="form-input"
+        type="password"
+        id="password"
+        placeholder="Contraseña"
+      />
+      <input class="form-submit" type="submit" value="Login" />
+      <p v-if="error" class="error">Algo ha salido mal.</p>
+    </form>
+  </div>
+</template>
+
+<script lang="js">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+    data() {
+        return {
+          user: "",
+          password: "",
+          error: false,
+        };
+    },
+    created() {
+    },
+    components: {
+    },
+    watch: {
+
+    },
+    methods: {
+        funciono(){
+            this.$router.push("/start");
+
+            //console.log(this.user + this.password);
+        },
+        emitData(){
+          this.$emit('getUser', this.user);
+        }
+
+    },
+});
+</script>
+
+<style>
+.login {
+  padding: 2rem;
+}
+.title {
+  text-align: center;
+  padding-left: 10px;
+  padding-top: 2px;
+  font-size: 30px;
+  color: white;
+  &:focus {
+    outline: 0;
+    border-color: #1ab188;
+  }
+}
+.form {
+  margin: 3rem auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 20%;
+  min-width: 350px;
+  max-width: 100%;
+  background: rgba(19, 35, 47, 0.9);
+  border-radius: 5px;
+  padding: 40px;
+  box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.3);
+}
+.form-label {
+  margin-top: 2rem;
+  color: white;
+  margin-bottom: 0.5rem;
+  &:first-of-type {
+    margin-top: 0rem;
+  }
+}
+img {
+  max-width: 50px;
+  max-height: 50px;
+}
+.error {
+  padding-top: 35px;
+  color: red;
+  font-weight: bold;
+}
+.form-input {
+  padding: 10px 15px;
+  background: none;
+  background-image: none;
+  border: 1px solid white;
+  color: white;
+  &:focus {
+    outline: 0;
+    border-color: #1ab188;
+  }
+}
+.form-submit {
+  background: #1ab188;
+  border: none;
+  color: white;
+  margin-top: 3rem;
+  padding: 1rem 0;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: #0b9185;
+  }
+}
+.principal {
+  margin-top: 5%;
+}
+.top-header{
+  text-align:center;
+}
+</style>
