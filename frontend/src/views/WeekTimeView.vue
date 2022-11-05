@@ -1,12 +1,14 @@
 <script setup>
 import FooterComponent from '../components/FooterComponent.vue'
 import SidebarComponent from '../components/SidebarComponent.vue'
+import WeekTimeComponent from '../components/WeekTimeComponent.vue'
+
 </script>
 
 <template>
   <main>
     <SidebarComponent />
-    <h1>funciono</h1>
+    <WeekTimeComponent /> 
     <FooterComponent />
   </main>
 </template>

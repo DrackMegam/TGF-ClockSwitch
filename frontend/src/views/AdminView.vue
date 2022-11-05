@@ -1,12 +1,14 @@
 <script setup>
 import FooterComponent from '../components/FooterComponent.vue'
 import SidebarComponent from '../components/SidebarComponent.vue'
+import AdminComponent from '../components/AdminComponent.vue'
+
 </script>
 
 <template>
   <main>
     <SidebarComponent />
-    <h1>funciono</h1>
+    <AdminComponent />
     <FooterComponent />
   </main>
 </template>

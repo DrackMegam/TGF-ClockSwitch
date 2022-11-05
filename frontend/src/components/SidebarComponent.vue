@@ -2,16 +2,64 @@
   <div class="mainSidebar">
     <nav class="navbar topSidebar">
       <a @click="volver()" class="navbar-brand"> ClockSwitch</a>
+      <span>Bienvenido usuario</span>
     </nav>
     <div class="leftSidebar">
-      <span>dasdassda</span>
+      <ul class="navbar-nav navbar-sidenav">
+        <li
+          class="nav-item"
+          data-toggle="tooltip"
+          data-placement="right"
+          title="Mis horas de la semana actual"
+        >
+          <a class="nav-link">
+            <i class="fa fa-fw fa-table"></i>
+            <span @click="weekTime()" class="nav-link-text">Mis horas semana actual</span>
+          </a>
+        </li>
+        <li
+          class="nav-item"
+          data-toggle="tooltip"
+          data-placement="right"
+          title="Horas de mis trabajadores"
+        >
+          <a class="nav-link">
+            <i class="fa fa-fw fa-table"></i>
+            <span @click="goEveryone()" class="nav-link-text"
+              >Horas de mis trabajadores</span
+            >
+          </a>
+        </li>
+        <li
+          class="nav-item"
+          data-toggle="tooltip"
+          data-placement="right"
+          title="Aniadir-Quitar Admins"
+        >
+          <a class="nav-link">
+            <i class="fa fa-user-plus"></i>
+            <span @click="goAdmin()" class="nav-link-text">Añadir/Quitar Admins</span>
+          </a>
+        </li>
+        <li
+          class="nav-item"
+          data-toggle="tooltip"
+          data-placement="right"
+          title="Aniadir-Quitar Admins"
+        >
+          <a class="nav-link">
+            <i class="fa fa-users"></i>
+            <span @click="goSubs()" class="nav-link-text">Mis Subscripciones</span>
+          </a>
+        </li>
+      </ul>
+      
     </div>
   </div>
 </template>
 
 <script lang="js">
 import { defineComponent } from 'vue';
-//import LoginComponent from './LoginComponent.vue'
 
 
 
@@ -87,5 +135,14 @@ export default defineComponent({
   height:100%;
   width:300px;
   background-color:rgb(20, 43, 44);
+}
+.nav-link-text{
+  font-size: 20px;
+  padding-left:10px;
+  padding-top:5px;
+}
+.nav-item{
+  margin-top:20px;
+  margin-left:10px;
 }
 </style>

@@ -13,6 +13,26 @@ const router = createRouter({
       name: 'main',
       component: () => import('../views/MainView.vue')
     },
+    {
+      path: '/weektime',
+      name: 'weektime',
+      component: () => import('../views/WeekTimeView.vue')
+    },
+    {
+      path: '/everyone',
+      name: 'everyone',
+      component: () => import('../views/EveryoneView.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/AdminView.vue')
+    },
+    {
+      path: '/subscription',
+      name: 'subscription',
+      component: () => import('../views/SubscriptionView.vue')
+    },
   ]
 })
 
