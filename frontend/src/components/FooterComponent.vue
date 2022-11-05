@@ -1,14 +1,10 @@
 <template>
-  <div class="main">
-    <div class="">
+  <div class="mainFooter">
       <footer class="">
         <div class="">
-          <div>
-            <small> 2022 - David Véliz Fernández - TFG DAW</small>
-          </div>
+          <small> 2022 - David Véliz Fernández - TFG DAW</small>
         </div>
       </footer>
-    </div>
   </div>
 </template>
 
@@ -35,10 +31,13 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.main {
-  background-color: red;
+<style scoped>
+.mainFooter {
+  background-color: rgb(10, 33, 34);
+  position:fixed;
+  bottom:0;
+  left:300px;
+  width:100%;
+  height:50px;
 }
-
-
 </style>

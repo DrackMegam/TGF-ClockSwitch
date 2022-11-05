@@ -59,7 +59,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .login {
   padding: 2rem;
 }
@@ -116,7 +116,7 @@ img {
   }
 }
 .form-submit {
-  background: #1ab188;
+  background: rgb(180, 54, 0);
   border: none;
   color: white;
   margin-top: 3rem;
@@ -128,7 +128,7 @@ img {
   }
 }
 .principal {
-  margin-top: 5%;
+  margin:auto;
 }
 .top-header{
   text-align:center;

@@ -1,11 +1,11 @@
 <template>
   <div class="mainSidebar">
-    <nav class="navbar" id="mainNav">
+    <nav class="navbar topSidebar">
       <a @click="volver()" class="navbar-brand"> ClockSwitch</a>
-
-
-
     </nav>
+    <div class="leftSidebar">
+      <span>dasdassda</span>
+    </div>
   </div>
 </template>
 
@@ -55,3 +55,37 @@ export default defineComponent({
 });
 </script>
 
+<style scoped>
+/* Imports */
+@import url("../lib/bootstrap.css");
+@import url("../lib/bootstrap.min.css");
+@import url("../lib/bootstrap-grid.css");
+@import url("../lib/bootstrap-grid.min.css");
+@import url("../lib/bootstrap-reboot.css");
+@import url("../lib/bootstrap-reboot.min.css");
+@import url("../lib/startbootstrap-sb-admin/vendor/font-awesome/css/font-awesome.min.css");
+@import url("../lib/startbootstrap-sb-admin/vendor/datatables/dataTables.bootstrap4.min.css");
+@import url("../lib/toastr.js/toastr.min.css");
+
+.topSidebar{
+  position:fixed;
+  top:0;
+  left:0;
+  height:70px;
+  width: 100%;
+  background-color:rgb(10, 33, 34);
+  color:rgb(215, 89, 0);
+  /*
+    rgb(30, 53, 54)
+    rgb(30, 89, 54)
+  */
+}
+.leftSidebar{
+  position:fixed;
+  top:70px;
+  left:0;
+  height:100%;
+  width:300px;
+  background-color:rgb(20, 43, 44);
+}
+</style>

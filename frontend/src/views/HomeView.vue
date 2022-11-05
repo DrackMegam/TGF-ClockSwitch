@@ -7,3 +7,9 @@ import LoginComponent from '../components/LoginComponent.vue'
     <LoginComponent />
   </main>
 </template>
+
+<style scoped>
+body{
+  background-color:rgb(10, 33, 34);
+}
+</style>
