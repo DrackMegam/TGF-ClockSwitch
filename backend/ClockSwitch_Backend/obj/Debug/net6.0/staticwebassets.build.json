@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "y3YrOzQ7nfppMrTymstWQZg+r7VT5+YOqgNL/oWg6ug=",
+  "Source": "ClockSwitch_Backend",
+  "BasePath": "_content/ClockSwitch_Backend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
