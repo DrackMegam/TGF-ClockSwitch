@@ -1,5 +1,4 @@
-﻿using ClockSwitch_Backend.Context;
-using ClockSwitch_Backend.DTO;
+﻿using ClockSwitch_Backend.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Xml.Linq;
 
@@ -7,34 +6,30 @@ namespace ClockSwitch_Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PersonaController : ControllerBase
+    public class MehaController : ControllerBase
     {
 
         private readonly ILogger<MehaController> _logger;
-        private readonly ClockSwitchDbContext _context;
 
-        public PersonaController(ILogger<MehaController> logger, ClockSwitchDbContext context)
+        public MehaController(ILogger<MehaController> logger)
         {
             _logger = logger;
-            _context = context; // Inyecto el contexto de mi BBDD en el controllador.
         }
 
         [HttpGet]
-        public IEnumerable<PersonaDto> Get()
+        public IEnumerable<Meha> Get()
         {
-            List<PersonaDto> data = _context.Persona.ToList();
-
-
-            //data.Add(new PersonaDto
-            //{
-            //    Id = 192,
-            //    Name = "SoyPersona"
-            //});
-            //data.Add(new PersonaDto
-            //{
-            //    Id = 497,
-            //    Name = "DesdeDB"
-            //});
+            List<Meha> data = new List<Meha>();
+            data.Add(new Meha
+            {
+                Id = 1928,
+                Name = "Mehamius"
+            });
+            data.Add(new Meha
+            {
+                Id = 497,
+                Name = "Rrcr"
+            });
 
 
             return data.ToArray();

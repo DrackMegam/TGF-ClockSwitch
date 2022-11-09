@@ -24,7 +24,7 @@ export default defineComponent({
       async meha() {
           console.log("Utilidad: Recuperar meha");
           try{
-            fetch("https://localhost:44368/Meha")
+            fetch("https://localhost:44368/Persona")
             .then((response) => response.json())
             .then((data) => {
               data.forEach((element) => {
