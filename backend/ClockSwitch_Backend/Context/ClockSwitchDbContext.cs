@@ -14,15 +14,21 @@ namespace ClockSwitch_Backend.Context
 
         // Esta propiedad será la "tabla" que recogerá la información de la BBDD.
         public DbSet<PersonaDto> Persona { get; set; }
+        public DbSet<UsuarioDto> Usuario { get; set; }
+        public DbSet<SuscripcionDto> Suscripcion { get; set; }
+        public DbSet<TareaDto> Tarea { get; set; }
+        public DbSet<HistorialDto> Historial { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Transformo el tipo de columna a una variable para poder trabajar con ella.
-            
             modeloPersona(modelBuilder);
-
+            modeloUsuario(modelBuilder);
+            modeloSuscripcion(modelBuilder);
+            modeloTarea(modelBuilder);
+            modeloHistorial(modelBuilder);
         }
 
         private void modeloPersona(ModelBuilder modelBuilder)
@@ -35,16 +41,43 @@ namespace ClockSwitch_Backend.Context
             modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(100)").HasConversion<string?>());
         }
 
-        /*
         private void modeloUsuario(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Dni).HasColumnType("varchar(9)").HasConversion<string>());
-            modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(50)").HasConversion<string?>());
-            modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Apellidos).HasColumnType("varchar(100)").HasConversion<string?>());
-            modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Descripcion).HasColumnType("varchar(500)").HasConversion<string?>());
-            modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Telefono).HasColumnType("int(9)").HasConversion<int>());
-            modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(100)").HasConversion<string?>());
+            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.IdUsuario).HasColumnType("varchar(9)").HasConversion<string>());
+            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.DniPersona).HasColumnType("varchar(9)").HasConversion<string?>());
+            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.Username).HasColumnType("varchar(50)").HasConversion<string>());
+            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.Password).HasColumnType("varchar(100)").HasConversion<string>());
+            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.IsAdmin).HasColumnType("int(1)").HasConversion<int>());
         }
-        */
+
+        private void modeloSuscripcion(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SuscripcionDto>(e => e.Property(o => o.Id).HasColumnType("int(5)").HasConversion<int>());
+            modelBuilder.Entity<SuscripcionDto>(e => e.Property(o => o.IdSuscriptor).HasColumnType("int(5)").HasConversion<int?>());
+            modelBuilder.Entity<SuscripcionDto>(e => e.Property(o => o.IdObjetivo).HasColumnType("int(5)").HasConversion<int>());
+        }
+
+        private void modeloTarea(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TareaDto>(e => e.Property(o => o.IdTarea).HasColumnType("int(9)").HasConversion<int>());
+            modelBuilder.Entity<TareaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(200)").HasConversion<string>());
+            modelBuilder.Entity<TareaDto>(e => e.Property(o => o.Descripcion).HasColumnType("varchar(600)").HasConversion<string?>());
+            modelBuilder.Entity<TareaDto>(e => e.Property(o => o.Estado).HasColumnType("varchar(50)").HasConversion<string>());
+        }
+
+        private void modeloHistorial(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.Id).HasColumnType("int(9)").HasConversion<int>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.IdTarea).HasColumnType("int(9)").HasConversion<int>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.IdUsuario).HasColumnType("int(5)").HasConversion<int>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasLunes).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasMartes).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasMiercoles).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasJueves).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasViernes).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasSabado).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasDomingo).HasColumnType("double").HasConversion<double>());
+
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace ClockSwitch_Backend.DTO
         public int IdUsuario { get; set; }
 
         [MaxLength(9)]
-        public string? Nombre { get; set; }
+        public string? DniPersona { get; set; }
 
         [MaxLength(50)]
         public string Username { get; set; }

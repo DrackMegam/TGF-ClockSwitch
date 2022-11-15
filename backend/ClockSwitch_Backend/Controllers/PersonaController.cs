@@ -24,25 +24,6 @@ namespace ClockSwitch_Backend.Controllers
         {
             List<PersonaDto> data = _context.Persona.ToList();
 
-            // MySql.Data.MySqlClient.MySqlException: 'Unknown column 'p.Dni' in 'field list''
-
-            // MySql.Data.MySqlClient.MySqlException:
-            // 'Authentication to host 'localhost' for user 'root'
-            // using method 'mysql_native_password' failed with message:
-            // Access denied for user 'root'@'localhost' (using password: YES)'
-
-            //data.Add(new PersonaDto
-            //{
-            //    Id = 192,
-            //    Name = "SoyPersona"
-            //});
-            //data.Add(new PersonaDto
-            //{
-            //    Id = 497,
-            //    Name = "DesdeDB"
-            //});
-
-
             return data.ToArray();
         }
     }
