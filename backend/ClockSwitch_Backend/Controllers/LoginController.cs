@@ -26,7 +26,7 @@ namespace ClockSwitch_Backend.Controllers
             if (userFound == null)
                 return false; // No se ha encontrado el usuario.
             if (!password.Equals(userFound.Password))
-                return false; // Comprobación de la contraseña
+                return false; // Comprobación de la contraseña.
 
             _logger.LogDebug("Se ha logeado el usuario <" + username + "> con password <" + password + ">");
             return true;
