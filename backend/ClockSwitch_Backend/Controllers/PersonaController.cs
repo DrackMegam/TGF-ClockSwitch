@@ -16,7 +16,7 @@ namespace ClockSwitch_Backend.Controllers
         public PersonaController(ILogger<MehaController> logger, ClockSwitchDbContext context)
         {
             _logger = logger;
-            _context = context; // Inyecto el contexto de mi BBDD en el controllador.
+            _context = context;
         }
 
         [HttpGet]

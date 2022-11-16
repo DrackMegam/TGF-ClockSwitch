@@ -1,6 +1,6 @@
 <template>
   <div class="principal">
-    <form @submit.prevent="funciono" class="form">
+    <form @submit.prevent="login" class="form">
       <div class="top-header">
         <img src="" />
         <span class="title">ClockSwitch</span>
@@ -22,7 +22,7 @@
         placeholder="Contraseña"
       />
       <input class="form-submit" type="submit" value="Login" />
-      <p v-if="error" class="error">Algo ha salido mal.</p>
+      <p v-if="error" class="error">El usuario o la contraseña son incorrectos.</p>
     </form>
   </div>
 </template>
@@ -36,6 +36,7 @@ export default defineComponent({
           user: "",
           password: "",
           error: false,
+          loggedIn: false,
         };
     },
     created() {
@@ -50,6 +51,22 @@ export default defineComponent({
             this.$router.push("/main");
 
             //console.log(this.user + this.password);
+        },
+        async login() {
+          console.log("Intentando loggear al usuario "+user.value+" con password: "+password.value);
+           try{
+            fetch("https://localhost:44368/Login/"+user.value+"/"+password.value)
+            .then((response) => response.json())
+            .then((data) => {
+              this.loggedIn = data;
+              console.log("Respuesta: "+this.loggedIn);
+              this.loggedIn ? this.$router.push("/main") : this.error = true;
+            })
+            .catch(e => {
+              console.error(e);
+            });
+          }
+          catch(e){console.log(e)}
         },
         emitData(){
           this.$emit('getUser', this.user);

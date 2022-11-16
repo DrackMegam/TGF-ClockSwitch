@@ -24,14 +24,14 @@ namespace ClockSwitch_Backend.Context
             base.OnModelCreating(modelBuilder);
 
             // Transformo el tipo de columna a una variable para poder trabajar con ella.
-            modeloPersona(modelBuilder);
-            modeloUsuario(modelBuilder);
-            modeloSuscripcion(modelBuilder);
-            modeloTarea(modelBuilder);
-            modeloHistorial(modelBuilder);
+            cargarPersona(modelBuilder);
+            cargarUsuario(modelBuilder);
+            cargarSuscripcion(modelBuilder);
+            cargarTarea(modelBuilder);
+            cargarHistorial(modelBuilder);
         }
 
-        private void modeloPersona(ModelBuilder modelBuilder)
+        private void cargarPersona(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Dni).HasColumnType("varchar(9)").HasConversion<string>());
             modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(50)").HasConversion<string?>());
@@ -41,7 +41,7 @@ namespace ClockSwitch_Backend.Context
             modelBuilder.Entity<PersonaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(100)").HasConversion<string?>());
         }
 
-        private void modeloUsuario(ModelBuilder modelBuilder)
+        private void cargarUsuario(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.IdUsuario).HasColumnType("varchar(9)").HasConversion<string>());
             modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.DniPersona).HasColumnType("varchar(9)").HasConversion<string?>());
@@ -50,14 +50,14 @@ namespace ClockSwitch_Backend.Context
             modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.IsAdmin).HasColumnType("int(1)").HasConversion<int>());
         }
 
-        private void modeloSuscripcion(ModelBuilder modelBuilder)
+        private void cargarSuscripcion(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SuscripcionDto>(e => e.Property(o => o.Id).HasColumnType("int(5)").HasConversion<int>());
             modelBuilder.Entity<SuscripcionDto>(e => e.Property(o => o.IdSuscriptor).HasColumnType("int(5)").HasConversion<int?>());
             modelBuilder.Entity<SuscripcionDto>(e => e.Property(o => o.IdObjetivo).HasColumnType("int(5)").HasConversion<int>());
         }
 
-        private void modeloTarea(ModelBuilder modelBuilder)
+        private void cargarTarea(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TareaDto>(e => e.Property(o => o.IdTarea).HasColumnType("int(9)").HasConversion<int>());
             modelBuilder.Entity<TareaDto>(e => e.Property(o => o.Nombre).HasColumnType("varchar(200)").HasConversion<string>());
@@ -65,7 +65,7 @@ namespace ClockSwitch_Backend.Context
             modelBuilder.Entity<TareaDto>(e => e.Property(o => o.Estado).HasColumnType("varchar(50)").HasConversion<string>());
         }
 
-        private void modeloHistorial(ModelBuilder modelBuilder)
+        private void cargarHistorial(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.Id).HasColumnType("int(9)").HasConversion<int>());
             modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.IdTarea).HasColumnType("int(9)").HasConversion<int>());
