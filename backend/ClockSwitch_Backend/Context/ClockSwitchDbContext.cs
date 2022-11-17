@@ -43,7 +43,7 @@ namespace ClockSwitch_Backend.Context
 
         private void cargarUsuario(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.IdUsuario).HasColumnType("varchar(9)").HasConversion<string>());
+            modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.IdUsuario).HasColumnType("int(5)").HasConversion<int>());
             modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.DniPersona).HasColumnType("varchar(9)").HasConversion<string?>());
             modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.Username).HasColumnType("varchar(50)").HasConversion<string>());
             modelBuilder.Entity<UsuarioDto>(e => e.Property(o => o.Password).HasColumnType("varchar(100)").HasConversion<string>());

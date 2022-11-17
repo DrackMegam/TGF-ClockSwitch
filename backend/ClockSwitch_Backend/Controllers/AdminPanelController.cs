@@ -45,23 +45,24 @@ namespace ClockSwitch_Backend.Controllers
             catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar insertar en la tabla <Persona>: " + e.ToString());
+                return false;
             }
             return true;
 
         }
 
         [HttpGet("AddUser/{dniPersona}/{username}/{password}/{isAdmin}/")]
-        public bool AddUser(string dni, string username, string password, int isadmin)
+        public bool AddUser(string dniPersona, string username, string password, bool isAdmin)
         {
-            if (username.Length == 0 || password.Length == 0 || (isadmin != 1 || isadmin != 0))
+            if (username.Length == 0 || password.Length == 0 )
                 return false;
 
             UsuarioDto newUser = new UsuarioDto()
             {
-                DniPersona = dni ?? "",
+                DniPersona = dniPersona ?? "",
                 Username = username,
                 Password = password,
-                IsAdmin = isadmin
+                IsAdmin = isAdmin ? 1 : 0 // En C++ es un bool, pero lo que necesito es un 1 o un 0.
             };
 
             try
@@ -69,11 +70,11 @@ namespace ClockSwitch_Backend.Controllers
                 _context.Usuario.Add(newUser);
                 int resultado = _context.SaveChanges();
                 _logger.LogDebug("Se ha ejecutado: AddUser <" + resultado + ">");
-
             }
             catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar insertar en la tabla <Usuario>: " + e.ToString());
+                return false;
             }
             return true;
         }
@@ -101,6 +102,7 @@ namespace ClockSwitch_Backend.Controllers
             catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar insertar en la tabla <Tarea>: " + e.ToString());
+                return false;
             }
             return true;
         }
@@ -124,6 +126,7 @@ namespace ClockSwitch_Backend.Controllers
             catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar eliminar en la tabla <Persona>: " + e.ToString());
+                return false;
             }
             return true;
 
@@ -145,6 +148,7 @@ namespace ClockSwitch_Backend.Controllers
             catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar eliminar en la tabla <Usuario>: " + e.ToString());
+                return false;
             }
             return true;
         }
@@ -160,15 +164,49 @@ namespace ClockSwitch_Backend.Controllers
             {
                 // Pese existir un método "Update" lo mejor es modificar el objeto y guardar los cambios en el contexto.
                 // El por qué no lo elimino es debido a que deseo tener un registro de TODAS las tareas. Cerradas, canceladas u olvidadas.
-                targetTask.Estado = "Cancelado";
+                targetTask.Estado = "Cancelada";
                 int resultado = _context.SaveChanges();
                 _logger.LogDebug("Se ha ejecutado: RemoveTask <" + resultado + ">");
             }
             catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar eliminar en la tabla <Tarea>: " + e.ToString());
+                return false;
             }
             return true;
+        }
+
+        [HttpGet("GetPerson/{option}")]
+        public List<PersonaDto> GetPerson(string option)
+        {
+            return _context.Persona.ToList();
+        }
+
+        [HttpGet("GetUser/{option}")]
+        public List<UsuarioDto> GetUser(string option)
+        {
+            return option switch
+            {
+                "all" => _context.Usuario.ToList(),
+                "admins" => _context.Usuario.Where(e => e.IsAdmin == 1).ToList(),
+                "noAdmins" => _context.Usuario.Where(e => e.IsAdmin == 0).ToList(),
+                _ => _context.Usuario.ToList(),
+            };
+        }
+
+        [HttpGet("GetTask/{status}")]
+        public List<TareaDto> GetTask(string status)
+        {
+            // Pendiente - En progreso - Bloqueada - Completada - Cancelada
+            return status switch
+            {
+                "Pendiente" => _context.Tarea.Where(e => e.Estado.Equals("Pendiente")).ToList(),
+                "En progreso" => _context.Tarea.Where(e => e.Estado.Equals("En progreso")).ToList(),
+                "Bloqueada" => _context.Tarea.Where(e => e.Estado.Equals("Bloqueada")).ToList(),
+                "Completada" => _context.Tarea.Where(e => e.Estado.Equals("Completada")).ToList(),
+                "Cancelada" => _context.Tarea.Where(e => e.Estado.Equals("Cancelada")).ToList(),
+                _ => _context.Tarea.ToList(),
+            };
         }
 
         [HttpGet("Gimme1")]

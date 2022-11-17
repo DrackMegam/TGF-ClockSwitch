@@ -417,3 +417,6 @@ backend/ClockSwitch_Backend/obj/staticwebassets.pack.sentinel
 *.pdb
 *.sentinel
 *.cache
+*.dll
+*.pdb
+*.sentinel

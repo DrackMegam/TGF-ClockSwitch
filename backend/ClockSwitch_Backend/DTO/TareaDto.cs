@@ -16,6 +16,7 @@ namespace ClockSwitch_Backend.DTO
 
         [MaxLength(50)]
         public string Estado { get; set; }
+        // Pendiente - En progreso - Bloqueada - Completada - Cancelada
 
     }
 }
