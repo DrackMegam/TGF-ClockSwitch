@@ -413,3 +413,7 @@ MigrationBackup/
 backend/ClockSwitch_Backend/obj/Debug/net6.0/ClockSwitch_Backend.dll
 backend/ClockSwitch_Backend/obj/Debug/net6.0/ClockSwitch_Backend.pdb
 backend/ClockSwitch_Backend/obj/staticwebassets.pack.sentinel
+*.dll
+*.pdb
+*.sentinel
+*.cache
