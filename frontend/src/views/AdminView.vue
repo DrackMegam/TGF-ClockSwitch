@@ -14,7 +14,4 @@ import AdminComponent from '../components/AdminComponent.vue'
 </template>
 
 <style scoped>
-main{
-  background-color:gray;
-}
 </style>

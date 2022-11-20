@@ -38,7 +38,7 @@
         >
           <a class="nav-link">
             <i class="fa fa-user-plus"></i>
-            <span @click="goAdmin()" class="nav-link-text">Añadir/Quitar Admins</span>
+            <span @click="goAdmin()" class="nav-link-text">Panel de administrador</span>
           </a>
         </li>
         <li

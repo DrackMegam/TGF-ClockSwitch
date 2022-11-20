@@ -19,7 +19,6 @@ namespace ClockSwitch_Backend.Controllers
             _context = context;
         }
 
-
         [HttpGet("AddPerson/{dni}/{nombre}/{apellido}/{descripcion}/{telefono}/{localidad}")]
         public bool AddPerson(string dni, string nombre, string apellido, string descripcion, int telefono, string localidad)
         {
@@ -176,8 +175,8 @@ namespace ClockSwitch_Backend.Controllers
             return true;
         }
 
-        [HttpGet("GetPerson/{option}")]
-        public List<PersonaDto> GetPerson(string option)
+        [HttpGet("GetPerson")]
+        public List<PersonaDto> GetPerson()
         {
             return _context.Persona.ToList();
         }
@@ -205,6 +204,7 @@ namespace ClockSwitch_Backend.Controllers
                 "Bloqueada" => _context.Tarea.Where(e => e.Estado.Equals("Bloqueada")).ToList(),
                 "Completada" => _context.Tarea.Where(e => e.Estado.Equals("Completada")).ToList(),
                 "Cancelada" => _context.Tarea.Where(e => e.Estado.Equals("Cancelada")).ToList(),
+                "all" => _context.Tarea.ToList(),
                 _ => _context.Tarea.ToList(),
             };
         }
