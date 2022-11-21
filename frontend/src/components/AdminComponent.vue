@@ -51,31 +51,34 @@
           <label class="form-label" for="">Descripcion</label>
           <textarea class="form-control bg-dark text-white" id="descripcionForm" rows="3"></textarea>
         </div>
-        <button type="button" v-on:click="addPersonSubmit()" class="btn btn-block mb-4 btnRegistro">Registrar usuario</button>
+        <button type="button" v-on:click="addPersonSubmit()" class="btn btn-block mb-4 btnRegistro">Registrar
+          usuario</button>
         <div class="form-outline mb-4 errorPersona" id="errorPersona">
           <label class="form-label text-danger" for="">El nombre y el apellido no pueden estar vacíos.</label>
         </div>
       </form>
 
-
       <form class="formularioTarea" id="formularioTarea">
         <div class="form-outline">
           <label class="form-label" for="">Tarea</label>
-          <input type="text" id="nombreForm" class="form-control bg-dark text-white" />
+          <input type="text" id="tareaForm" class="form-control bg-dark text-white" />
         </div>
         <div class="form-outline mb-4 mt-3">
           <label class="form-label" for="">Descripcion</label>
-          <textarea class="form-control bg-dark text-white" id="descripcionForm" rows="3"></textarea>
+          <textarea class="form-control bg-dark text-white" id="descripcionTareaForm" rows="3"></textarea>
         </div>
         <div class="form-outline mb-4">
-          <select class="custom-select bg-dark text-white" size="4">
+          <select id='estadoForm' class="custom-select bg-dark text-white" size="4">
             <option selected value="Pendiente">Pendiente</option>
             <option value="En progreso">En progreso</option>
             <option value="Bloqueada">Bloqueada</option>
             <option value="Completada">Completada</option>
           </select>
         </div>
-        <button type="button" v-on:click="funciono()" class="btn btn-block mb-4 btnRegistro">Registrar usuario</button>
+        <button type="button" v-on:click="addTaskSubmit()" class="btn btn-block mb-4 btnRegistro">Añadir tarea</button>
+        <div class="form-outline mb-4 errorTarea" id="errorTarea">
+          <label class="form-label text-danger" for="">El nombre de la tarea no puede estar vacio.</label>
+        </div>
       </form>
     </div>
   </div>
@@ -91,22 +94,22 @@ export default defineComponent({
     return {
       dataReceived: [],
       dataBoolean: false,
+      dniDelete: "",
     };
   },
   created() {
 
   },
   watch: {
-
   },
   methods: {
     funciono: function () {
       console.log("funciono");
     },
-    ocultarTodo: function(){
+    ocultarTodo: function () {
       $("#formularioUsuario").css("display", "none");
       $("#formularioTarea").css("display", "none");
-      $("#errorPersona").css("display","none");
+      $("#errorPersona").css("display", "none");
       $("#datatable").empty();
     },
     addPerson: function () {
@@ -114,7 +117,7 @@ export default defineComponent({
       $("#formularioUsuario").css("display", "block");
     },
     addPersonSubmit: async function () {
-      let nombre,apellidos,descripcion,dni,localidad,telefono;
+      let nombre, apellidos, descripcion, dni, localidad, telefono;
       dni = document.getElementById("dniForm").value;
       nombre = document.getElementById("nombreForm").value;
       apellidos = document.getElementById("apellidosForm").value;
@@ -123,25 +126,19 @@ export default defineComponent({
       localidad = document.getElementById("localidadForm").value;
 
       // TODO: Falta la comprobación del DNI
-      if(dni.length == 0){
-        $("#errorPersona").css("display","block");
+      if (dni.length == 0) {
+        $("#errorPersona").css("display", "block");
         $("#errorPersona").text("El DNI no es válido");
-        $("#errorPersona").css("color","red");
-      }else if(nombre.length == 0 || apellidos.length == 0){
-        $("#errorPersona").css("display","block");
+        $("#errorPersona").css("color", "red");
+      } else if (nombre.length == 0 || apellidos.length == 0) {
+        $("#errorPersona").css("display", "block");
         $("#errorPersona").text("El nombre y los apellidos no pueden estar vacíos");
-        $("#errorPersona").css("color","red");
-      }else{
-        let url="https://localhost:44368/AdminPanel/AddPerson/"+dni+"/"+nombre+"/"+apellidos+"/"+descripcion+"/"+telefono+"/"+localidad;
-        this.dataReceived.length=0;
+        $("#errorPersona").css("color", "red");
+      } else {
+        let url = "https://localhost:44368/AdminPanel/AddPerson/" + dni + "/" + nombre + "/" + apellidos + "/" + descripcion + "/" + telefono + "/" + localidad;
+        this.dataReceived.length = 0;
         this.contactarBack(url).then(() => {
-          console.log(this.dataReceived);
-          if(this.dataReceived[0] == true){
-            // TODO: No se calca bien la respuesta del método en this.dataRecieved
-            console.log("TODO UN EXITO JEFE MAESTRO MAKINA")
-          }else{
-            console.log("FUK")
-          }
+          this.ocultarTodo();
         })
       }
     },
@@ -154,10 +151,26 @@ export default defineComponent({
     addTask: function () {
       this.ocultarTodo();
       $("#formularioTarea").css("display", "block");
-
     },
     addTaskSubmit: function () {
-      this.contactarBack("aaa");
+      let tarea, descripcion, estado;
+      tarea = document.getElementById("tareaForm").value;
+      descripcion = document.getElementById("descripcionTareaForm").value;
+      estado = document.getElementById("estadoForm").value;
+
+      // TODO: Falta la comprobación del DNI
+      if (tarea.length == 0) {
+        $("#errorTarea").css("display", "block");
+        $("#errorTarea").text("El nombre de la tarea no puede estar vacío");
+        $("#errorTarea").css("color", "red");
+      } else {
+        let url = "https://localhost:44368/AdminPanel/AddTask/" + tarea + "/" + descripcion + "/" + estado ;
+        this.dataReceived.length = 0;
+        console.log(url);
+        this.contactarBack(url).then(() => {
+          this.ocultarTodo();
+        })
+      }
     },
     getPerson: function () {
       this.ocultarTodo();
@@ -180,11 +193,19 @@ export default defineComponent({
             "<td>" + element.descripcion + "</td>" +
             "<td>" + element.localidad + "</td>" +
             "<td>" + element.telefono + "</td>" +
-            "<td><button id='" + element.dni + "'>X</button></td>" +
+            "<td><button value='" + element.dni + "' name='botonBorrarPersona'>X</button></td>" +
             "</tr>";
         });
         $("#datatable").append(html);
+        let vueContext = this; // Para entrar en el contexto de VUE, no el de JQUERY con sus eventos de Click.
+        $('button[name="botonBorrarPersona"]').click(function (event) {
+          if (confirm('¿Estás seguro de que quieres eliminar al usuario ' + event.currentTarget.value + '?')) {
+            vueContext.removePerson(event.currentTarget.value);
+          }
+        });
       });
+    },
+    jQueryClickEvent: function (event) {
     },
     getUser: function () {
       this.ocultarTodo();
@@ -260,13 +281,8 @@ export default defineComponent({
         fetch(url)
           .then((response) => response.json())
           .then((data) => {
-            if(data){
-              console.log(data+" NO SOY FUK");
-              this.dataReceived[0](true)
-            }else{
-              console.log(data+" FUK Y TU PUTA MADRE");
-              this.dataReceived[0](false)
-            }
+            console.log(data);
+            this.dataBoolean = data
           })
           .catch(error => {
             console.error(error);
@@ -289,8 +305,11 @@ export default defineComponent({
       }
       catch (e) { console.log(e) }
     },
-    removePerson: function () {
-      this.contactarBack("aaa");
+    removePerson: async function (dniSeleccionado) {
+      let url = "https://localhost:44368/AdminPanel/RemovePerson/" + dniSeleccionado;
+      this.contactarBack(url).then(() => {
+        this.ocultarTodo();
+      });
     },
     removeUser: function () {
       this.contactarBack("aaa");
@@ -383,8 +402,10 @@ Naranja secundario: rgb(180, 54, 0)
   display: none;
 }
 
-.errorPersona{
+.errorPersona {
+  display: none;
+}
+.errorTarea{
   display:none;
 }
-
 </style>
