@@ -50,11 +50,14 @@ namespace ClockSwitch_Backend.Controllers
 
         }
 
-        [HttpGet("AddUser/{dniPersona}/{username}/{password}/{isAdmin}/")]
-        public bool AddUser(string dniPersona, string username, string password, bool isAdmin)
+        [HttpGet("AddUser/{dniPersona}/{username}/{password}/{isAdminString}")]
+        public bool AddUser(string dniPersona, string username, string password, string isAdminString)
         {
-            if (username.Length == 0 || password.Length == 0 )
+
+            if (username.Length == 0 || password.Length == 0)
                 return false;
+
+            bool isAdmin = isAdminString.Equals("true"); // Por URL solo recibe texto.
 
             UsuarioDto newUser = new UsuarioDto()
             {

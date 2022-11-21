@@ -12,7 +12,7 @@
     <div id="contenido" class="bottom container">
       <table id="datatable" class="table datatable"></table>
 
-      <form class="formularioUsuario" id="formularioUsuario">
+      <form class="formularioPersona" id="formularioPersona">
         <div class="row mb-4">
           <div class="col">
             <div class="form-outline">
@@ -55,6 +55,52 @@
           usuario</button>
         <div class="form-outline mb-4 errorPersona" id="errorPersona">
           <label class="form-label text-danger" for="">El nombre y el apellido no pueden estar vacíos.</label>
+        </div>
+      </form>
+
+      <form class="formularioUsuario" id="formularioUsuario">
+        <div class="row mb-4">
+          <div class="col">
+            <div class="form-outline">
+              <label class="form-label" for="">Nombre Usuario</label>
+              <input type="text" id="nombreUserForm" class="form-control bg-dark text-white" />
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-outline mt-1 ml-4">
+              <label class="form-label" for="">DNI Vinculado</label>
+              <br>
+              <select id="comboDnis" class="form-select form-select-lg mb-2 comboPersonalizado"
+                aria-label=".form-select-lg example">
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="align-middle form-check blockquote mt-4">
+              <input class="form-check-input mt-3" type="checkbox" value="soyAdmin" id="isAdminUserForm">
+              <label class="form-check-label ml-1 mt-2" for="">Administrador</label>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col">
+            <div class="form-outline">
+              <label class="form-label" for="">Contraseña</label>
+              <input type="password" id="passUserForm" class="form-control bg-dark text-white" />
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-outline">
+              <label class="form-label" for="">Repetir contraseña</label>
+              <input type="password" id="passUserForm2" class="form-control bg-dark text-white" />
+            </div>
+          </div>
+        </div>
+        <button type="button" v-on:click="addUserSubmit()" class="btn btn-block mb-4 btnRegistro">
+          Registrar usuario
+        </button>
+        <div class="form-outline mb-4 errorUsuario" id="errorUsuario">
+          <label class="form-label text-danger" for=""></label>
         </div>
       </form>
 
@@ -107,14 +153,15 @@ export default defineComponent({
       console.log("funciono");
     },
     ocultarTodo: function () {
-      $("#formularioUsuario").css("display", "none");
+      $("#formularioPersona").css("display", "none");
       $("#formularioTarea").css("display", "none");
+      $("#formularioUsuario").css("display", "none");
       $("#errorPersona").css("display", "none");
       $("#datatable").empty();
     },
     addPerson: function () {
       this.ocultarTodo();
-      $("#formularioUsuario").css("display", "block");
+      $("#formularioPersona").css("display", "block");
     },
     addPersonSubmit: async function () {
       let nombre, apellidos, descripcion, dni, localidad, telefono;
@@ -143,10 +190,47 @@ export default defineComponent({
       }
     },
     addUser: function () {
-      console.log("addUser");
+      this.ocultarTodo();
+
+      let html = "";
+      let url = "https://localhost:44368/AdminPanel/GetPerson";
+      this.dataReceived.length = 0;
+
+      $("#comboDnis").empty();
+      this.recuperarDatosBack(url).then(() => {
+        this.dataReceived.forEach(element => {
+          html += "<option value='" + element.dni + "'>" + element.nombre + " " + element.apellidos + "</option>";
+        });
+        $("#comboDnis").append(html);
+      });
+
+
+      $("#formularioUsuario").css("display", "block");
     },
     addUserSubmit: function () {
-      this.contactarBack("aaa");
+      let user, dniVinculado, pass1, pass2, admin;
+      user = document.getElementById("nombreUserForm").value;
+      dniVinculado = document.getElementById("comboDnis").value;
+      pass1 = document.getElementById("passUserForm").value;
+      pass2 = document.getElementById("passUserForm2").value;
+      admin = document.getElementById('isAdminUserForm').checked;
+
+      if (user.length == 0) {
+        $("#errorUsuario").css("display", "block");
+        $("#errorUsuario").text("El usuario debe de poseer un nombre.");
+        $("#errorUsuario").css("color", "red");
+      } else if (pass1.localeCompare(pass2) || pass1.length == 0) {
+        $("#errorUsuario").css("display", "block");
+        $("#errorUsuario").text("Las contraseñas no coinciden.");
+        $("#errorUsuario").css("color", "red");
+      } else {
+        $("#errorUsuario").css("display", "none");
+        let url = "https://localhost:44368/AdminPanel/AddUser/" + dniVinculado + "/" + user + "/" + pass1 + "/" + admin;
+        this.dataReceived.length = 0;
+        this.contactarBack(url).then(() => {
+          this.ocultarTodo();
+        })
+      }
     },
     addTask: function () {
       this.ocultarTodo();
@@ -164,7 +248,7 @@ export default defineComponent({
         $("#errorTarea").text("El nombre de la tarea no puede estar vacío");
         $("#errorTarea").css("color", "red");
       } else {
-        let url = "https://localhost:44368/AdminPanel/AddTask/" + tarea + "/" + descripcion + "/" + estado ;
+        let url = "https://localhost:44368/AdminPanel/AddTask/" + tarea + "/" + descripcion + "/" + estado;
         this.dataReceived.length = 0;
         console.log(url);
         this.contactarBack(url).then(() => {
@@ -199,20 +283,17 @@ export default defineComponent({
         $("#datatable").append(html);
         let vueContext = this; // Para entrar en el contexto de VUE, no el de JQUERY con sus eventos de Click.
         $('button[name="botonBorrarPersona"]').click(function (event) {
-          if (confirm('¿Estás seguro de que quieres eliminar al usuario ' + event.currentTarget.value + '?')) {
+          if (confirm('¿Estás seguro de que quieres eliminar a la persona ' + event.currentTarget.value + '?')) {
             vueContext.removePerson(event.currentTarget.value);
           }
         });
       });
-    },
-    jQueryClickEvent: function (event) {
     },
     getUser: function () {
       this.ocultarTodo();
       let html = "<tr><th scope='col'>IdUsuario</th>" +
         "<th scope='col'>Dni</th>" +
         "<th scope='col'>Usuario</th>" +
-        "<th scope='col'>Administrador</th>" +
         "<th scope='col'>Eliminar</th>" +
         "</tr>";
       let url = "https://localhost:44368/AdminPanel/GetUser/noAdmins";
@@ -223,11 +304,16 @@ export default defineComponent({
           html += "<tr><td scope='row'>" + element.idUsuario + "</td>" +
             "<td>" + element.dniPersona + "</td>" +
             "<td>" + element.username + "</td>" +
-            "<td>" + element.isAdmin + "</td>" +
-            "<td><button id='" + element.dni + "'>X</button></td>" +
+            "<td><button name='botonBorrarUsuario' value='" + element.idUsuario + "'>X</button></td>" +
             "</tr>";
         });
         $("#datatable").append(html);
+        let vueContext = this; // Para entrar en el contexto de VUE, no el de JQUERY con sus eventos de Click.
+        $('button[name="botonBorrarUsuario"]').click(function (event) {
+          if (confirm('¿Estás seguro de que quieres eliminar al usuario ' + event.currentTarget.value + '?')) {
+            vueContext.removeUser(event.currentTarget.value);
+          }
+        });
       });
     },
     getAdmins: function () {
@@ -235,7 +321,6 @@ export default defineComponent({
       let html = "<tr><th scope='col'>IdUsuario</th>" +
         "<th scope='col'>Dni</th>" +
         "<th scope='col'>Usuario</th>" +
-        "<th scope='col'>Administrador</th>" +
         "<th scope='col'>Eliminar</th>" +
         "</tr>";
       let url = "https://localhost:44368/AdminPanel/GetUser/admins";
@@ -246,11 +331,16 @@ export default defineComponent({
           html += "<tr><td scope='row'>" + element.idUsuario + "</td>" +
             "<td>" + element.dniPersona + "</td>" +
             "<td>" + element.username + "</td>" +
-            "<td>" + element.isAdmin + "</td>" +
-            "<td><button id='" + element.dni + "'>X</button></td>" +
+            "<td><button name='botonBorrarUsuario' value='" + element.idUsuario + "'>X</button></td>" +
             "</tr>";
         });
         $("#datatable").append(html);
+        let vueContext = this; // Para entrar en el contexto de VUE, no el de JQUERY con sus eventos de Click.
+        $('button[name="botonBorrarUsuario"]').click(function (event) {
+          if (confirm('¿Estás seguro de que quieres eliminar al administrador ' + event.currentTarget.value + '?')) {
+            vueContext.removeUser(event.currentTarget.value);
+          }
+        });
       });
     },
     getTask: function () {
@@ -270,10 +360,16 @@ export default defineComponent({
             "<td>" + element.nombre + "</td>" +
             "<td>" + element.descripcion + "</td>" +
             "<td>" + element.estado + "</td>" +
-            "<td><button id='" + element.idTarea + "'>X</button></td>" +
+            "<td><button name='botonBorrarTask' value='" + element.idTarea + "'>X</button></td>" +
             "</tr>";
         });
         $("#datatable").append(html);
+        let vueContext = this; // Para entrar en el contexto de VUE, no el de JQUERY con sus eventos de Click.
+        $('button[name="botonBorrarTask"]').click(function (event) {
+          if (confirm('¿Deseas cancelar la tarea Nº' + event.currentTarget.value + '?')) {
+            vueContext.removeTask(event.currentTarget.value);
+          }
+        });
       });
     },
     contactarBack: async function (url) {
@@ -311,11 +407,17 @@ export default defineComponent({
         this.ocultarTodo();
       });
     },
-    removeUser: function () {
-      this.contactarBack("aaa");
+    removeUser: function (idUsuario) {
+      let url = "https://localhost:44368/AdminPanel/RemoveUser/" + idUsuario;
+      this.contactarBack(url).then(() => {
+        this.ocultarTodo();
+      });
     },
-    removeTask: function () {
-      this.contactarBack("aaa");
+    removeTask: function (tareaId) {
+      let url = "https://localhost:44368/AdminPanel/RemoveTask/" + tareaId;
+      this.contactarBack(url).then(() => {
+        this.ocultarTodo();
+      });
     },
   },
 });
@@ -390,6 +492,12 @@ Naranja secundario: rgb(180, 54, 0)
 }
 
 
+.formularioPersona {
+  color: white;
+  font-size: 15px;
+  display: none;
+}
+
 .formularioUsuario {
   color: white;
   font-size: 15px;
@@ -405,7 +513,20 @@ Naranja secundario: rgb(180, 54, 0)
 .errorPersona {
   display: none;
 }
-.errorTarea{
-  display:none;
+
+.errorTarea {
+  display: none;
+}
+
+.errorUsuario {
+  display: none;
+}
+
+.comboPersonalizado {
+  width: max-content;
+  background-color: rgb(20, 43, 44);
+  color: rgb(215, 89, 0);
+  font-weight: bold;
+  font-size: 20px;
 }
 </style>
