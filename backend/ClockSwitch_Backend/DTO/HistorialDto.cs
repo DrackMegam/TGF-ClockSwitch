@@ -27,5 +27,9 @@ namespace ClockSwitch_Backend.DTO
         public double? HorasSabado { get; set; }
 
         public double? HorasDomingo { get; set; }
+
+        public int Ano { get; set; }
+
+        public int Semana { get; set; }
     }
 }

@@ -14,7 +14,4 @@ import WeekTimeComponent from '../components/WeekTimeComponent.vue'
 </template>
 
 <style scoped>
-main{
-  background-color:gray;
-}
 </style>

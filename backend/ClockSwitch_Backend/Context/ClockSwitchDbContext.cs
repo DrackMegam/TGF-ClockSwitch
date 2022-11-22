@@ -70,13 +70,15 @@ namespace ClockSwitch_Backend.Context
             modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.Id).HasColumnType("int(9)").HasConversion<int>());
             modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.IdTarea).HasColumnType("int(9)").HasConversion<int>());
             modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.IdUsuario).HasColumnType("int(5)").HasConversion<int>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasLunes).HasColumnType("double").HasConversion<double>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasMartes).HasColumnType("double").HasConversion<double>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasMiercoles).HasColumnType("double").HasConversion<double>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasJueves).HasColumnType("double").HasConversion<double>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasViernes).HasColumnType("double").HasConversion<double>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasSabado).HasColumnType("double").HasConversion<double>());
-            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasDomingo).HasColumnType("double").HasConversion<double>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasLunes).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasMartes).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasMiercoles).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasJueves).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasViernes).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasSabado).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.HorasDomingo).HasColumnType("double").HasConversion<double?>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.Ano).HasColumnType("int(4)").HasConversion<int>());
+            modelBuilder.Entity<HistorialDto>(e => e.Property(o => o.Semana).HasColumnType("int(2)").HasConversion<int>());
 
         }
     }
