@@ -1,9 +1,16 @@
 <template>
   <div class="main">
+    <div id="weekSummary" class="container weekSummary">
+      <table id="datatable" class="table table-striped datatable uniqueTable"></table>
+      <button type="button" id="btnAddTask" v-on:click="funciono()" class="btn btn-block mb-4 btnAddTask">
+        Añadir nueva tarea
+      </button>
+    </div>
     <div id="firstTask" class="container firstTask mt-4">
       <form class="formularioPrimeraTarea" id="formularioPrimeraTarea">
-        <div class="form-outline">
-          <label class="form-label h4" for="">Parece que aún no has empezado ninguna tarea esta semana. Selecciona una
+        <div class="form-outline" id="">
+          <label class="form-label h4 txtFirstTask" id="txtFirstTask" for="">Parece que aún no has empezado ninguna
+            tarea esta semana. Selecciona una
             tarea para comenzar: </label>
         </div>
         <div class="form-outline mt-4">
@@ -39,8 +46,7 @@
         </div>
       </form>
     </div>
-    <div id="weekSummary" class="container weekSummary">
-    </div>
+
   </div>
 </template>
 
@@ -57,8 +63,9 @@ export default defineComponent({
       availableDescription: "",
       availableStatus: "",
       availableTaskId: 0,
-      userId:0,
+      userId: 10, // mehamius
       deletedFirstSelectOption: false,
+      historyItem: {},
     };
   },
   methods: {
@@ -66,16 +73,14 @@ export default defineComponent({
       console.log("funciono");
     },
     getThisWeekSummary: function () {
-      let user = 10; // mehamius
       // https://javascript.plainenglish.io/how-to-get-the-week-of-year-of-a-given-date-in-javascript-c8fe0d764b5d
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
       let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
-      let url = "https://localhost:44368/Semana/WeekSummary/" + user + "/" + thisYear + "/" + thisWeek;
+      let url = "https://localhost:44368/Semana/WeekSummary/" + this.userId + "/" + thisYear + "/" + thisWeek;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {
-        //console.log(this.dataReceived);
         if (this.dataReceived[0].ano == 1928) {
           console.log("Esta semana no tiene historial.");
           // Recupero las tareas que NO estén canceladas.
@@ -95,9 +100,73 @@ export default defineComponent({
           $("#firstTask").css("display", "block");
         } else {
           console.log("Historial encontrado.");
+          console.log(this.dataReceived);
+          let html = "<thead>" +
+            "<tr><th scope='col'>Tarea</th>" +
+            "<th scope='col'>Lunes</th>" +
+            "<th scope='col'>Martes</th>" +
+            "<th scope='col'>Miercoles</th>" +
+            "<th scope='col'>Jueves</th>" +
+            "<th scope='col'>Viernes</th>" +
+            "<th scope='col'>Sabado</th>" +
+            "<th scope='col'>Domingo</th>" +
+            "<th></th>" +
+            "</tr></thead>";
+          let sumatorioTask = 0;
+          let sumatorioTotal = 0;
+          let sumatorioDay = {
+            lunes:0,
+            martes:0,
+            miercoles:0,
+            jueves:0,
+            viernes:0,
+            sabado:0,
+            domingo:0,
+          }
           this.dataReceived.forEach(e => {
-            $("#weekSummary").append("<spam>Algo hay por ahí</spam>");
-          })
+            sumatorioTask = e.horasLunes + e.horasMartes + e.horasMiercoles
+              + e.horasJueves + e.horasViernes
+              + e.horasSabado + e.horasDomingo;
+            html += "<tbody>" +
+              "<tr><th scope='row'>" + e.idTarea + "</th>" +
+              "<td style='specialCell'>" + e.horasLunes + "</td>" +
+              "<td>" + e.horasMartes + "</td>" +
+              "<td>" + e.horasMiercoles + "</td>" +
+              "<td>" + e.horasJueves + "</td>" +
+              "<td>" + e.horasViernes + "</td>" +
+              "<td>" + e.horasSabado + "</td>" +
+              "<td>" + e.horasDomingo + "</td>" +
+              "<td>" + sumatorioTask + "</td>" +
+              "</tr>";
+              sumatorioTotal += sumatorioTask;
+              sumatorioDay.lunes+=e.horasLunes;
+              sumatorioDay.martes+=e.horasMartes;
+              sumatorioDay.miercoles+=e.horasMiercoles;
+              sumatorioDay.jueves+=e.horasJueves;
+              sumatorioDay.viernes+=e.horasViernes;
+              sumatorioDay.sabado+=e.horasSabado;
+              sumatorioDay.domingo+=e.horasDomingo;
+          });
+          html+="<tr><th scope='row'></th>" +
+              "<td style='specialCell'>" + sumatorioDay.lunes + "</td>" +
+              "<td>" + sumatorioDay.martes + "</td>" +
+              "<td>" + sumatorioDay.miercoles + "</td>" +
+              "<td>" + sumatorioDay.jueves + "</td>" +
+              "<td>" + sumatorioDay.viernes + "</td>" +
+              "<td>" + sumatorioDay.sabado + "</td>" +
+              "<td>" + sumatorioDay.domingo + "</td>" +
+              "<td>" + sumatorioTotal + "</td>" +
+              "</tr></tbody>";
+          $("#weekSummary").css("display", "block");
+          /*
+          $("#txtFirstTask").text("Añadir una nueva tarea");
+          $("#btnFirstTask").attr("disabled", true); // Deshabilito el botón hasta seleccionar Tarea.
+          $("#btnFirstTask").css("background-color", "rgb(20, 43, 44)");
+          $("#btnFirstTask").css("color", "white");
+          $("#btnFirstTask").html('Añadir tarea');
+          $("#firstTask").css("display", "block");
+          */
+          $("#datatable").append(html);
         }
       });
     },
@@ -119,12 +188,11 @@ export default defineComponent({
 
     },
     updateFirstTaskAvailable: function () {
-      let user = 10;
-      let url = "https://localhost:44368/Semana/AddFirstHistory/" + this.availableTaskId + "/" + user;
+      let url = "https://localhost:44368/Semana/AddFirstHistory/" + this.availableTaskId + "/" + this.userId;
       this.contactarBack(url).then(() => {
         this.$router.go(this.$router.currentRoute);
       });
-      
+
     },
     contactarBack: async function (url) {
       try {
@@ -215,16 +283,57 @@ export default defineComponent({
 }
 
 .btnSubmitPersonalizado {
-  background-color: rgb(215, 89, 0);
+  background-color: rgb(20, 43, 44);
   font-weight: bolder;
   font-size: 18px;
   color: black;
 }
-.firstTask{
-  display:none;
+
+.btnAddTask {
+  font-weight: bolder;
+  font-size: 18px;
+  color: white;
+  background-color: rgb(215, 89, 0);
 }
 
-.weekSummary{
-  display:none;
+.firstTask {
+  display: none;
+}
+
+.weekSummary {
+  display: none;
+}
+
+.datatable {
+  display: block;
+}
+
+/* https://www.w3schools.com/css/tryit.asp?filename=trycss_table_fancy */
+.uniqueTable {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.uniqueTable td,
+.uniqueTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.uniqueTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.uniqueTable tr:hover {
+  background-color: #ddd;
+}
+
+.uniqueTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
 }
 </style>
