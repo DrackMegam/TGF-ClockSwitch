@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div id="weekSummary" class="container weekSummary">
+    <div id="weekSummary" class="container weekSummary mt-4">
       <table id="datatable" class="table table-striped datatable uniqueTable"></table>
       <button type="button" id="btnAddTask" v-on:click="funciono()" class="btn btn-block mb-4 btnAddTask">
         Añadir nueva tarea
@@ -77,12 +77,19 @@ export default defineComponent({
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
-      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
+      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 2; // Para ajustarlo al horario ibérico
       let url = "https://localhost:44368/Semana/WeekSummary/" + this.userId + "/" + thisYear + "/" + thisWeek;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {
         if (this.dataReceived[0].ano == 1928) {
-          console.log("Esta semana no tiene historial.");
+          this.showFirstTaskForm();
+        } else {
+          this.showThisWeekSummary();
+        }
+      });
+    },
+    showFirstTaskForm: function() {
+      console.log("Esta semana no tiene historial.");
           // Recupero las tareas que NO estén canceladas.
           let url = "https://localhost:44368/Semana/GetAvailableTask";
           this.dataReceived.length = 0;
@@ -98,18 +105,22 @@ export default defineComponent({
           $("#btnFirstTask").css("background-color", "rgb(20, 43, 44)");
           $("#btnFirstTask").css("color", "white");
           $("#firstTask").css("display", "block");
-        } else {
-          console.log("Historial encontrado.");
+    },
+    showThisWeekSummary: function() {
+      console.log("Historial encontrado.");
           console.log(this.dataReceived);
+          let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:25px;color:rgb(215, 89, 0);'";
+          let styleHeaderRow="style='padding-left:7px;padding-right:7px;'";
           let html = "<thead>" +
-            "<tr><th scope='col'>Tarea</th>" +
-            "<th scope='col'>Lunes</th>" +
-            "<th scope='col'>Martes</th>" +
-            "<th scope='col'>Miercoles</th>" +
-            "<th scope='col'>Jueves</th>" +
-            "<th scope='col'>Viernes</th>" +
-            "<th scope='col'>Sabado</th>" +
-            "<th scope='col'>Domingo</th>" +
+            "<tr "+styleHeader+"><th "+styleHeaderRow+" scope='col'>Tarea</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Lunes</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Martes</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Miercoles</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Jueves</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Viernes</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Sabado</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Domingo</th>" +
+            "<th "+styleHeaderRow+" scope='col'>Total</th>" +
             "<th></th>" +
             "</tr></thead>";
           let sumatorioTask = 0;
@@ -123,13 +134,22 @@ export default defineComponent({
             sabado:0,
             domingo:0,
           }
+          let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+          let evenRow = true;
           this.dataReceived.forEach(e => {
             sumatorioTask = e.horasLunes + e.horasMartes + e.horasMiercoles
               + e.horasJueves + e.horasViernes
               + e.horasSabado + e.horasDomingo;
+            if(evenRow){
+              styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+              evenRow = false;
+            }else{
+              styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
+              evenRow = true;
+            }
             html += "<tbody>" +
-              "<tr><th scope='row'>" + e.idTarea + "</th>" +
-              "<td style='specialCell'>" + e.horasLunes + "</td>" +
+              "<tr "+styleRow+"><th scope='row'>" + e.idTarea + "</th>" +
+              "<td>" + e.horasLunes + "</td>" +
               "<td>" + e.horasMartes + "</td>" +
               "<td>" + e.horasMiercoles + "</td>" +
               "<td>" + e.horasJueves + "</td>" +
@@ -147,8 +167,9 @@ export default defineComponent({
               sumatorioDay.sabado+=e.horasSabado;
               sumatorioDay.domingo+=e.horasDomingo;
           });
-          html+="<tr><th scope='row'></th>" +
-              "<td style='specialCell'>" + sumatorioDay.lunes + "</td>" +
+          let styleSubHeader = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;color:rgb(215, 89, 0);font-weight:bold;'";
+          html+="<tr "+styleSubHeader+" ><th scope='row'></th>" +
+              "<td>" + sumatorioDay.lunes + "</td>" +
               "<td>" + sumatorioDay.martes + "</td>" +
               "<td>" + sumatorioDay.miercoles + "</td>" +
               "<td>" + sumatorioDay.jueves + "</td>" +
@@ -158,17 +179,7 @@ export default defineComponent({
               "<td>" + sumatorioTotal + "</td>" +
               "</tr></tbody>";
           $("#weekSummary").css("display", "block");
-          /*
-          $("#txtFirstTask").text("Añadir una nueva tarea");
-          $("#btnFirstTask").attr("disabled", true); // Deshabilito el botón hasta seleccionar Tarea.
-          $("#btnFirstTask").css("background-color", "rgb(20, 43, 44)");
-          $("#btnFirstTask").css("color", "white");
-          $("#btnFirstTask").html('Añadir tarea');
-          $("#firstTask").css("display", "block");
-          */
           $("#datatable").append(html);
-        }
-      });
     },
     updateAvailableTasksInfo: function () {
       var selectedAvailableTask = $('#availableTasksCombo').find(":selected").val();
@@ -302,10 +313,13 @@ export default defineComponent({
 
 .weekSummary {
   display: none;
+  width: 100%;
+  
 }
 
 .datatable {
   display: block;
+  width:100%;
 }
 
 /* https://www.w3schools.com/css/tryit.asp?filename=trycss_table_fancy */
@@ -335,5 +349,6 @@ export default defineComponent({
   text-align: left;
   background-color: #04AA6D;
   color: white;
+  font-size:20px;
 }
 </style>

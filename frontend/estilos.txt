@@ -1,5 +1,6 @@
 Verde principal: rgb(10, 33, 34)
 Verde secundario: rgb(20, 43, 44)
+Verde terciario: rgb(27, 58, 59)
 
 Naranja principal: rgb(215, 89, 0)
 Naranja secundario: rgb(180, 54, 0)
