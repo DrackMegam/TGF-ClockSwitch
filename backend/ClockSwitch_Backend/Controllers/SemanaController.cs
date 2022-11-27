@@ -44,6 +44,39 @@ namespace ClockSwitch_Backend.Controllers
             return historial;
         }
 
+
+        [HttpGet("WeekFullSummary/{user}/{year}/{week}")]
+        public List<HistorialFullDto> GetFullSemana(int user, int year, int week)
+        {
+            List<HistorialFullDto> fullHistory = new List<HistorialFullDto>();
+            List<HistorialDto> historial = GetSemana(user, year, week);
+
+
+            foreach(var e in historial)
+                fullHistory.Add(new HistorialFullDto
+                {
+                    Id = e.Id,
+                    Ano = e.Ano,
+                    Semana = e.Semana,
+                    IdTarea = e.IdTarea,
+                    IdUsuario = e.IdUsuario,
+                    HorasLunes = e.HorasLunes,
+                    HorasMartes = e.HorasMartes,
+                    HorasMiercoles = e.HorasMiercoles,
+                    HorasJueves = e.HorasJueves,
+                    HorasViernes = e.HorasViernes,
+                    HorasSabado = e.HorasSabado,
+                    HorasDomingo = e.HorasDomingo,
+                    NombreTarea = _context.Tarea.Where(i => i.IdTarea == e.IdTarea).FirstOrDefault()?.Nombre,
+                    EstadoTarea = _context.Tarea.Where(i => i.IdTarea == e.IdTarea).FirstOrDefault()?.Estado,
+                });;
+
+
+
+            //_logger.LogDebug("Recuperando información de  <" + personFound.Nombre + "> con DNI <" + personFound.Dni + ">");
+            return fullHistory;
+        }
+
         [HttpGet("GetAvailableTask")]
         public List<TareaDto> GetTask()
         {

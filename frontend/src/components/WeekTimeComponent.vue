@@ -86,7 +86,7 @@ export default defineComponent({
         if (this.dataReceived[0].ano == 1928) {
           this.showFirstTaskForm();
         } else {
-          this.showThisWeekSummary();
+          this.showThisWeekSummary(thisYear, thisWeek);
         }
       });
     },
@@ -108,77 +108,46 @@ export default defineComponent({
       $("#btnFirstTask").css("color", "white");
       $("#firstTask").css("display", "block");
     },
-    showThisWeekSummary: async function () {
+    showThisWeekSummary: async function (year, weekOfYear) {
       console.log("Historial encontrado.");
-      // Cargo en los datos de VUE el tipo de objeto que necesito.
-      this.dataReceived.forEach(e => {
-        let newItem = {
-          nombreTarea: "",
-          estadoTarea: "",
-          horasLunes: e.horasLunes,
-          horasMartes: e.horasMartes,
-          horasMiercoles: e.horasMiercoles,
-          horasJueves: e.horasJueves,
-          horasViernes: e.horasViernes,
-          horasSabado: e.horasSabado,
-          horasDomingo: e.horasDomingo,
-          idTarea: e.idTarea,
+      // Hago otra petición, pero esta vez para que me devuelva también los nombres y estados de las tareas.
+      let url = "https://localhost:44368/Semana/WeekFullSummary/" + this.userId + "/" + year + "/" + weekOfYear;
+      this.dataReceived = [];
+      this.recuperarDatosBack(url).then(() => {
+        console.log(this.dataReceived);
+        // Cabezera de la tabla.
+        let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:25px;color:rgb(215, 89, 0);'";
+        let styleHeaderRow = "style='padding-left:7px;padding-right:7px;'";
+        let html = "<thead>" +
+          "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Lunes</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Martes</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Miercoles</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Jueves</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Viernes</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Sabado</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Domingo</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Total</th>" +
+          "<th></th>" +
+          "</tr></thead>";
+        let sumatorioTask = 0;
+        let sumatorioTotal = 0;
+        let sumatorioDay = {
+          lunes: 0,
+          martes: 0,
+          miercoles: 0,
+          jueves: 0,
+          viernes: 0,
+          sabado: 0,
+          domingo: 0,
         }
-        this.historyItem.push(newItem);
-      })
 
-      let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:25px;color:rgb(215, 89, 0);'";
-      let styleHeaderRow = "style='padding-left:7px;padding-right:7px;'";
-      let html = "<thead>" +
-        "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Lunes</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Martes</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Miercoles</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Jueves</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Viernes</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Sabado</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Domingo</th>" +
-        "<th " + styleHeaderRow + " scope='col'>Total</th>" +
-        "<th></th>" +
-        "</tr></thead>";
-      let sumatorioTask = 0;
-      let sumatorioTotal = 0;
-      let sumatorioDay = {
-        lunes: 0,
-        martes: 0,
-        miercoles: 0,
-        jueves: 0,
-        viernes: 0,
-        sabado: 0,
-        domingo: 0,
-      }
-      let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
-      let evenRow = true;
-
-
-      // Ahora, con su ID, busco en la tabla de TAREAS su nombre y estado.
-
-
-      await this.cargarHistoryItem().then(() => {
-        console.log("HISTORY FULL CARGADO");
-        console.log(this.historyItemFull);
-
-
-
-
-
-
-
-        this.historyItem.forEach(e => {
-
-
-
-
-
-
-          
+        // Estilos de las filas y mostrar los datos recuperados.
+        let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+        let evenRow = true;
+        this.dataReceived.forEach(e => {
           sumatorioTask = e.horasLunes + e.horasMartes + e.horasMiercoles
             + e.horasJueves + e.horasViernes
             + e.horasSabado + e.horasDomingo;
@@ -212,9 +181,7 @@ export default defineComponent({
           sumatorioDay.domingo += e.horasDomingo;
         });
 
-
-
-
+        // Pie de la tabla con los sumatorios.
         let styleSubHeader = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;color:rgb(215, 89, 0);font-weight:bold;'";
         html += "<tr " + styleSubHeader + " ><th scope='row'></th>" +
           "<td></td>" +
@@ -231,21 +198,6 @@ export default defineComponent({
         $("#weekSummary").css("display", "block");
         $("#datatable").append(html);
       });
-
-
-    },
-    cargarHistoryItem: async function () {
-      this.historyItem.forEach(e => {
-        let url = "https://localhost:44368/Semana/GetSingleTask/" + e.idTarea;
-        let newHistoryItemFull = e;
-        this.recuperarDatoUnicoBack(url).then(() => {
-          newHistoryItemFull.nombreTarea = this.uniqueDataReceived.nombre;
-          newHistoryItemFull.estadoTarea = this.uniqueDataReceived.estado;
-          this.historyItemFull.push(newHistoryItemFull);
-        });
-      })
-    },
-    cargarHistoryItemInDatatable: function () {
 
     },
     updateAvailableTasksInfo: function () {
