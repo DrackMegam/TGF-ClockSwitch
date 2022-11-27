@@ -77,6 +77,32 @@ namespace ClockSwitch_Backend.Controllers
             return fullHistory;
         }
 
+        [HttpGet("GetMoreTasks/{user}/{year}/{week}")]
+        public List<TareaDto> GetMoreTasks(int user, int year, int week)
+        {
+            // Lista de tareas que tiene el usuario esta semana. Rehuso un método ya creado.
+            List<HistorialFullDto> currentWeekHistory = GetFullSemana(user, year, week);
+            List<int> currentTasksIds = currentWeekHistory.Select(i => i.IdTarea).ToList();
+
+
+            // Lista de todas las tareas que no haya escogido ya el usuario.
+            List<TareaDto> allTasks = _context.Tarea.ToList();
+            List<TareaDto> newTasks = new List<TareaDto>();
+
+            foreach(TareaDto task in allTasks)
+            {
+                bool workingOnIt = false;
+                foreach(int id in currentTasksIds)
+                    if(task.IdTarea == id)
+                        workingOnIt = true;
+
+                if (!workingOnIt)
+                    newTasks.Add(task);
+            }
+
+            return newTasks;
+        }
+
         [HttpGet("GetAvailableTask")]
         public List<TareaDto> GetTask()
         {

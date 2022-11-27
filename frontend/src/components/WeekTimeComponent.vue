@@ -2,7 +2,7 @@
   <div class="main">
     <div id="weekSummary" class="container weekSummary mt-4">
       <table id="datatable" class="table table-striped datatable uniqueTable"></table>
-      <button type="button" id="btnAddTask" v-on:click="funciono()" class="btn btn-block mb-4 btnAddTask">
+      <button type="button" id="btnAddTask" v-on:click="addNewTask()" class="btn btn-block mb-4 btnAddTask">
         Añadir nueva tarea
       </button>
     </div>
@@ -47,6 +47,43 @@
       </form>
     </div>
 
+    <div id="addTaskToWeek" class="container addTaskToWeek mt-4">
+      <form class="formularioPrimeraTarea" id="formularioPrimeraTarea">
+
+        <div class="form-outline mt-4">
+          <label class="form-label" for="">Tarea</label>
+          <br>
+          <select id="newTasksCombo" @change="updateNewTasksInfo()"
+            class="form-select comboPersonalizado form-select-lg mb-3" aria-label=".form-select-lg example">
+            <option selected value="0">- Vacío -</option>
+          </select>
+        </div>
+        <div class="row mb-4 mt-1">
+          <div class="col">
+            <div class="form-outline">
+              <label class="form-label" for="">Descripción</label>
+              <input readonly type="text" placeholder="Descripcion de la tarea" id="descripcionNueva"
+                class="form-control bg-dark text-white" />
+            </div>
+          </div>
+          <div class="col-lg3">
+            <div class="form-outline">
+              <label class="form-label" for="">Estado</label>
+              <input readonly type="text" placeholder="Estado actual de la tarea" id="estadoNueva"
+                class="form-control bg-dark text-white" />
+            </div>
+          </div>
+        </div>
+        <button type="button" id="btnNewTask" v-on:click="updateFirstTaskAvailable()"
+          class="btn btn-block mb-4 btnSubmitPersonalizado">
+          Añadir nueva tarea
+        </button>
+        <div class="form-outline mb-4 errorUsuario" id="errorUsuario">
+          <label class="form-label text-danger" for=""></label>
+        </div>
+      </form>
+    </div>
+
   </div>
 </template>
 
@@ -73,6 +110,28 @@ export default defineComponent({
   methods: {
     funciono: function () {
       console.log("funciono");
+    },
+    addNewTask: function () {
+      // Relleno el combo con datos nuevos.
+      let thisYear = new Date().getFullYear();
+      let now = new Date();
+      let onejan = new Date(now.getFullYear(), 0, 1);
+      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 2; // Para ajustarlo al horario ibérico
+      let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + thisYear + "/" + thisWeek;
+      this.dataReceived.length = 0;
+      this.recuperarDatosBack(url).then(() => {
+        console.log(this.dataReceived);
+        let html = "";
+        this.dataReceived.forEach(element => {
+          html += "<option value='" + element.idTarea + "'>" + element.nombre + "</option>";
+        });
+        $("#newTasksCombo").append(html);
+        $("#btnAddTask").css("display", "none");
+        $("#addTaskToWeek").css("display", "block");
+      });
+
+
+
     },
     getThisWeekSummary: function () {
       // https://javascript.plainenglish.io/how-to-get-the-week-of-year-of-a-given-date-in-javascript-c8fe0d764b5d
@@ -158,10 +217,11 @@ export default defineComponent({
             styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
             evenRow = true;
           }
+          let styleText = "style='font-size:15px;padding-left:15px;padding-right:15px;'";
           html += "<tbody>" +
             "<tr " + styleRow + "><th scope='row'>" + e.idTarea + "</th>" +
-            "<td>" + e.nombreTarea + "</td>" +
-            "<td>" + e.estadoTarea + "</td>" +
+            "<td " + styleText + ">" + e.nombreTarea + "</td>" +
+            "<td " + styleText + ">" + e.estadoTarea + "</td>" +
             "<td>" + e.horasLunes + "</td>" +
             "<td>" + e.horasMartes + "</td>" +
             "<td>" + e.horasMiercoles + "</td>" +
@@ -217,12 +277,28 @@ export default defineComponent({
       });
 
     },
+    updateNewTasksInfo: function () {
+      var selectedNewTask = $('#newTasksCombo').find(":selected").val();
+      console.log(selectedNewTask);
+      let url = "https://localhost:44368/Semana/GetSingleTask/" + selectedNewTask;
+      this.updateCurrentAvailableTask(url).then(() => {
+        $("#descripcionNueva").val(this.availableDescription);
+        $("#estadoNueva").val(this.availableStatus);
+        if (!this.deletedFirstSelectOption) { // Para evitar bugs al escoger una opción.
+          $("#newTasksCombo").find('option').get(0).remove();
+          this.deletedFirstSelectOption = true;
+        }
+        $("#btnNewTask").attr("disabled", false); // Habilito el botón tras obtener la información.
+        $("#btnNewTask").css("background-color", "rgb(215, 89, 0)");
+        $("#btnNewTask").css("color", "rgb(20, 43, 44)");
+      });
+
+    },
     updateFirstTaskAvailable: function () {
       let url = "https://localhost:44368/Semana/AddFirstHistory/" + this.availableTaskId + "/" + this.userId;
       this.contactarBack(url).then(() => {
         this.$router.go(this.$router.currentRoute);
       });
-
     },
     contactarBack: async function (url) {
       try {
@@ -382,5 +458,9 @@ export default defineComponent({
   background-color: #04AA6D;
   color: white;
   font-size: 20px;
+}
+
+.addTaskToWeek {
+  display: none;
 }
 </style>
