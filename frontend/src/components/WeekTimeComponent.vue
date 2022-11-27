@@ -51,7 +51,7 @@
 </template>
 
 <script lang="js">
-import { defineComponent } from 'vue';
+import { defineComponent, isProxy, toRaw } from 'vue';
 import jQuery from 'jquery';
 let $ = jQuery;
 
@@ -59,13 +59,15 @@ export default defineComponent({
   data() {
     return {
       dataReceived: [],
+      uniqueDataReceived: {},
       dataBoolean: false,
       availableDescription: "",
       availableStatus: "",
       availableTaskId: 0,
       userId: 10, // mehamius
       deletedFirstSelectOption: false,
-      historyItem: {},
+      historyItem: [],
+      historyItemFull: [],
     };
   },
   methods: {
@@ -88,98 +90,163 @@ export default defineComponent({
         }
       });
     },
-    showFirstTaskForm: function() {
+    showFirstTaskForm: function () {
       console.log("Esta semana no tiene historial.");
-          // Recupero las tareas que NO estén canceladas.
-          let url = "https://localhost:44368/Semana/GetAvailableTask";
-          this.dataReceived.length = 0;
-          this.recuperarDatosBack(url).then(() => {
-            console.log(this.dataReceived);
-            let html = "";
-            this.dataReceived.forEach(element => {
-              html += "<option value='" + element.idTarea + "'>" + element.nombre + "</option>";
-            });
-            $("#availableTasksCombo").append(html);
-          });
-          $("#btnFirstTask").attr("disabled", true); // Deshabilito el botón hasta seleccionar Tarea.
-          $("#btnFirstTask").css("background-color", "rgb(20, 43, 44)");
-          $("#btnFirstTask").css("color", "white");
-          $("#firstTask").css("display", "block");
+      // Recupero las tareas que NO estén canceladas.
+      let url = "https://localhost:44368/Semana/GetAvailableTask";
+      this.dataReceived.length = 0;
+      this.recuperarDatosBack(url).then(() => {
+        console.log(this.dataReceived);
+        let html = "";
+        this.dataReceived.forEach(element => {
+          html += "<option value='" + element.idTarea + "'>" + element.nombre + "</option>";
+        });
+        $("#availableTasksCombo").append(html);
+      });
+      $("#btnFirstTask").attr("disabled", true); // Deshabilito el botón hasta seleccionar Tarea.
+      $("#btnFirstTask").css("background-color", "rgb(20, 43, 44)");
+      $("#btnFirstTask").css("color", "white");
+      $("#firstTask").css("display", "block");
     },
-    showThisWeekSummary: function() {
+    showThisWeekSummary: async function () {
       console.log("Historial encontrado.");
-          console.log(this.dataReceived);
-          let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:25px;color:rgb(215, 89, 0);'";
-          let styleHeaderRow="style='padding-left:7px;padding-right:7px;'";
-          let html = "<thead>" +
-            "<tr "+styleHeader+"><th "+styleHeaderRow+" scope='col'>Tarea</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Lunes</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Martes</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Miercoles</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Jueves</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Viernes</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Sabado</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Domingo</th>" +
-            "<th "+styleHeaderRow+" scope='col'>Total</th>" +
-            "<th></th>" +
-            "</tr></thead>";
-          let sumatorioTask = 0;
-          let sumatorioTotal = 0;
-          let sumatorioDay = {
-            lunes:0,
-            martes:0,
-            miercoles:0,
-            jueves:0,
-            viernes:0,
-            sabado:0,
-            domingo:0,
+      // Cargo en los datos de VUE el tipo de objeto que necesito.
+      this.dataReceived.forEach(e => {
+        let newItem = {
+          nombreTarea: "",
+          estadoTarea: "",
+          horasLunes: e.horasLunes,
+          horasMartes: e.horasMartes,
+          horasMiercoles: e.horasMiercoles,
+          horasJueves: e.horasJueves,
+          horasViernes: e.horasViernes,
+          horasSabado: e.horasSabado,
+          horasDomingo: e.horasDomingo,
+          idTarea: e.idTarea,
+        }
+        this.historyItem.push(newItem);
+      })
+
+      let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:25px;color:rgb(215, 89, 0);'";
+      let styleHeaderRow = "style='padding-left:7px;padding-right:7px;'";
+      let html = "<thead>" +
+        "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Lunes</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Martes</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Miercoles</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Jueves</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Viernes</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Sabado</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Domingo</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Total</th>" +
+        "<th></th>" +
+        "</tr></thead>";
+      let sumatorioTask = 0;
+      let sumatorioTotal = 0;
+      let sumatorioDay = {
+        lunes: 0,
+        martes: 0,
+        miercoles: 0,
+        jueves: 0,
+        viernes: 0,
+        sabado: 0,
+        domingo: 0,
+      }
+      let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+      let evenRow = true;
+
+
+      // Ahora, con su ID, busco en la tabla de TAREAS su nombre y estado.
+
+
+      await this.cargarHistoryItem().then(() => {
+        console.log("HISTORY FULL CARGADO");
+        console.log(this.historyItemFull);
+
+
+
+
+
+
+
+        this.historyItem.forEach(e => {
+
+
+
+
+
+
+          
+          sumatorioTask = e.horasLunes + e.horasMartes + e.horasMiercoles
+            + e.horasJueves + e.horasViernes
+            + e.horasSabado + e.horasDomingo;
+          if (evenRow) {
+            styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+            evenRow = false;
+          } else {
+            styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
+            evenRow = true;
           }
-          let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
-          let evenRow = true;
-          this.dataReceived.forEach(e => {
-            sumatorioTask = e.horasLunes + e.horasMartes + e.horasMiercoles
-              + e.horasJueves + e.horasViernes
-              + e.horasSabado + e.horasDomingo;
-            if(evenRow){
-              styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
-              evenRow = false;
-            }else{
-              styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
-              evenRow = true;
-            }
-            html += "<tbody>" +
-              "<tr "+styleRow+"><th scope='row'>" + e.idTarea + "</th>" +
-              "<td>" + e.horasLunes + "</td>" +
-              "<td>" + e.horasMartes + "</td>" +
-              "<td>" + e.horasMiercoles + "</td>" +
-              "<td>" + e.horasJueves + "</td>" +
-              "<td>" + e.horasViernes + "</td>" +
-              "<td>" + e.horasSabado + "</td>" +
-              "<td>" + e.horasDomingo + "</td>" +
-              "<td>" + sumatorioTask + "</td>" +
-              "</tr>";
-              sumatorioTotal += sumatorioTask;
-              sumatorioDay.lunes+=e.horasLunes;
-              sumatorioDay.martes+=e.horasMartes;
-              sumatorioDay.miercoles+=e.horasMiercoles;
-              sumatorioDay.jueves+=e.horasJueves;
-              sumatorioDay.viernes+=e.horasViernes;
-              sumatorioDay.sabado+=e.horasSabado;
-              sumatorioDay.domingo+=e.horasDomingo;
-          });
-          let styleSubHeader = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;color:rgb(215, 89, 0);font-weight:bold;'";
-          html+="<tr "+styleSubHeader+" ><th scope='row'></th>" +
-              "<td>" + sumatorioDay.lunes + "</td>" +
-              "<td>" + sumatorioDay.martes + "</td>" +
-              "<td>" + sumatorioDay.miercoles + "</td>" +
-              "<td>" + sumatorioDay.jueves + "</td>" +
-              "<td>" + sumatorioDay.viernes + "</td>" +
-              "<td>" + sumatorioDay.sabado + "</td>" +
-              "<td>" + sumatorioDay.domingo + "</td>" +
-              "<td>" + sumatorioTotal + "</td>" +
-              "</tr></tbody>";
-          $("#weekSummary").css("display", "block");
-          $("#datatable").append(html);
+          html += "<tbody>" +
+            "<tr " + styleRow + "><th scope='row'>" + e.idTarea + "</th>" +
+            "<td>" + e.nombreTarea + "</td>" +
+            "<td>" + e.estadoTarea + "</td>" +
+            "<td>" + e.horasLunes + "</td>" +
+            "<td>" + e.horasMartes + "</td>" +
+            "<td>" + e.horasMiercoles + "</td>" +
+            "<td>" + e.horasJueves + "</td>" +
+            "<td>" + e.horasViernes + "</td>" +
+            "<td>" + e.horasSabado + "</td>" +
+            "<td>" + e.horasDomingo + "</td>" +
+            "<td>" + sumatorioTask + "</td>" +
+            "</tr>";
+          sumatorioTotal += sumatorioTask;
+          sumatorioDay.lunes += e.horasLunes;
+          sumatorioDay.martes += e.horasMartes;
+          sumatorioDay.miercoles += e.horasMiercoles;
+          sumatorioDay.jueves += e.horasJueves;
+          sumatorioDay.viernes += e.horasViernes;
+          sumatorioDay.sabado += e.horasSabado;
+          sumatorioDay.domingo += e.horasDomingo;
+        });
+
+
+
+
+        let styleSubHeader = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;color:rgb(215, 89, 0);font-weight:bold;'";
+        html += "<tr " + styleSubHeader + " ><th scope='row'></th>" +
+          "<td></td>" +
+          "<td></td>" +
+          "<td>" + sumatorioDay.lunes + "</td>" +
+          "<td>" + sumatorioDay.martes + "</td>" +
+          "<td>" + sumatorioDay.miercoles + "</td>" +
+          "<td>" + sumatorioDay.jueves + "</td>" +
+          "<td>" + sumatorioDay.viernes + "</td>" +
+          "<td>" + sumatorioDay.sabado + "</td>" +
+          "<td>" + sumatorioDay.domingo + "</td>" +
+          "<td>" + sumatorioTotal + "</td>" +
+          "</tr></tbody>";
+        $("#weekSummary").css("display", "block");
+        $("#datatable").append(html);
+      });
+
+
+    },
+    cargarHistoryItem: async function () {
+      this.historyItem.forEach(e => {
+        let url = "https://localhost:44368/Semana/GetSingleTask/" + e.idTarea;
+        let newHistoryItemFull = e;
+        this.recuperarDatoUnicoBack(url).then(() => {
+          newHistoryItemFull.nombreTarea = this.uniqueDataReceived.nombre;
+          newHistoryItemFull.estadoTarea = this.uniqueDataReceived.estado;
+          this.historyItemFull.push(newHistoryItemFull);
+        });
+      })
+    },
+    cargarHistoryItemInDatatable: function () {
+
     },
     updateAvailableTasksInfo: function () {
       var selectedAvailableTask = $('#availableTasksCombo').find(":selected").val();
@@ -227,6 +294,19 @@ export default defineComponent({
             data.forEach((element) => {
               this.dataReceived.push(element);
             });
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
+    recuperarDatoUnicoBack: async function (url) {
+      try {
+        return fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            this.uniqueDataReceived = data;
           })
           .catch(error => {
             console.error(error);
@@ -314,12 +394,12 @@ export default defineComponent({
 .weekSummary {
   display: none;
   width: 100%;
-  
+
 }
 
 .datatable {
   display: block;
-  width:100%;
+  width: 100%;
 }
 
 /* https://www.w3schools.com/css/tryit.asp?filename=trycss_table_fancy */
@@ -349,6 +429,6 @@ export default defineComponent({
   text-align: left;
   background-color: #04AA6D;
   color: white;
-  font-size:20px;
+  font-size: 20px;
 }
 </style>
