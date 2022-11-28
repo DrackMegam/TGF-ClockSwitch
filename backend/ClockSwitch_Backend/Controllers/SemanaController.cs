@@ -117,6 +117,59 @@ namespace ClockSwitch_Backend.Controllers
             return uniqueTask!; // Esto NUNCA va a ser nulo por que desde el FRONT no puede hacer la petición manualmente.
         }
 
+        [HttpGet("GetSingleHistoryToUpdate/{id}")]
+        public HistorialFullDto GetSingleHistoryToUpdate(int id)
+        {
+            HistorialDto uniqueHistory = _context.Historial.Where(e => e.Id == id).FirstOrDefault()!;
+            HistorialFullDto uniqueFullHistory = new HistorialFullDto()
+            {
+                Id = uniqueHistory.Id,
+                Ano = uniqueHistory.Ano,
+                Semana = uniqueHistory.Semana,
+                IdTarea = uniqueHistory.IdTarea,
+                IdUsuario = uniqueHistory.IdUsuario,
+                HorasLunes = uniqueHistory.HorasLunes,
+                HorasMartes = uniqueHistory.HorasMartes,
+                HorasMiercoles = uniqueHistory.HorasMiercoles,
+                HorasJueves = uniqueHistory.HorasJueves,
+                HorasViernes = uniqueHistory.HorasViernes,
+                HorasSabado = uniqueHistory.HorasSabado,
+                HorasDomingo = uniqueHistory.HorasDomingo,
+                NombreTarea = _context.Tarea.Where(i => i.IdTarea == uniqueHistory.IdTarea).FirstOrDefault()?.Nombre,
+                EstadoTarea = _context.Tarea.Where(i => i.IdTarea == uniqueHistory.IdTarea).FirstOrDefault()?.Estado,
+            };
+
+            return uniqueFullHistory!;
+        }
+
+        [HttpGet("UpdateHistory/{id}/{lunes}/{martes}/{miercoles}/{jueves}/{viernes}/{sabado}/{domingo}")]
+        public bool UpdateHistory(int id,double lunes, double martes, double miercoles, double jueves, double viernes, double sabado, double domingo)
+        {
+            // No requiero de semana y año, pues el ID del historico es único por entrada semanal.
+            HistorialDto? historyToUpdate = _context.Historial.Where(e => e.Id == id).FirstOrDefault();
+            if (historyToUpdate == null)
+                return false;
+
+            try
+            {
+                historyToUpdate.HorasLunes = lunes;
+                historyToUpdate.HorasMartes = martes;
+                historyToUpdate.HorasMiercoles = miercoles;
+                historyToUpdate.HorasJueves = jueves;
+                historyToUpdate.HorasViernes = viernes;
+                historyToUpdate.HorasSabado = sabado;
+                historyToUpdate.HorasDomingo = domingo;
+
+                _context.SaveChanges();
+            }catch(Exception e)
+            {
+                _logger.LogDebug("Error al intentar actualizar en la tabla <Historial>: " + e.ToString());
+                return false;
+            }
+
+            return true!; // Esto NUNCA va a ser nulo por que desde el FRONT no puede hacer la petición manualmente.
+        }
+
         [HttpGet("AddFirstHistory/{idTarea}/{idUsuario}")]
         public bool AddFirstHistory(int idTarea, int idUsuario)
         {

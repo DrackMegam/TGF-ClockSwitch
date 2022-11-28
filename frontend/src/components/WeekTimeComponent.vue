@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div id="weekSummary" class="container weekSummary mt-4">
+    <div id="weekSummary" class="container  weekSummary  mt-4">
       <table id="datatable" class="table table-striped datatable uniqueTable"></table>
       <button type="button" id="btnAddTask" v-on:click="addNewTask()" class="btn btn-block mb-4 btnAddTask">
         Añadir nueva tarea
@@ -84,6 +84,10 @@
       </form>
     </div>
 
+    <div id="updateHistory" class="container updateHistory mt-4">
+      <table id="tableUpdate" class="table table-striped tableUpdate uniqueTable"></table>
+    </div>
+
   </div>
 </template>
 
@@ -149,6 +153,9 @@ export default defineComponent({
         }
       });
     },
+    reload: function () {
+      this.$router.go(this.$router.currentRoute);
+    },
     showFirstTaskForm: function () {
       console.log("Esta semana no tiene historial.");
       // Recupero las tareas que NO estén canceladas.
@@ -175,20 +182,21 @@ export default defineComponent({
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
         // Cabezera de la tabla.
-        let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:25px;color:rgb(215, 89, 0);'";
-        let styleHeaderRow = "style='padding-left:7px;padding-right:7px;'";
+        let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:22px;color:rgb(215, 89, 0);'";
+        let styleHeaderRow = "style='text-align: left;padding-left:7px;padding-right:7px;'";
+        let styleHeaderRowNumber = "style='text-align: right;padding-left:7px;padding-right:7px;font-size:18px;'";
         let html = "<thead>" +
           "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
           "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
           "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Lunes</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Martes</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Miercoles</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Jueves</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Viernes</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Sabado</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Domingo</th>" +
-          "<th " + styleHeaderRow + " scope='col'>Total</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Lunes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Martes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Miercoles</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Jueves</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Viernes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Sabado</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Domingo</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Total</th>" +
           "<th></th>" +
           "</tr></thead>";
         let sumatorioTask = 0;
@@ -217,7 +225,8 @@ export default defineComponent({
             styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
             evenRow = true;
           }
-          let styleText = "style='font-size:15px;padding-left:15px;padding-right:15px;'";
+          let styleText = "style='text-align: left;font-size:15px;padding-left:10px;padding-right:15px;'";
+          let styleEditButton = "style='padding-left:25px;padding-right:15px;'";
           html += "<tbody>" +
             "<tr " + styleRow + "><th scope='row'>" + e.idTarea + "</th>" +
             "<td " + styleText + ">" + e.nombreTarea + "</td>" +
@@ -230,6 +239,7 @@ export default defineComponent({
             "<td>" + e.horasSabado + "</td>" +
             "<td>" + e.horasDomingo + "</td>" +
             "<td>" + sumatorioTask + "</td>" +
+            "<td " + styleEditButton + " name='editHistory' id='" + e.id + "'> * </td>" +
             "</tr>";
           sumatorioTotal += sumatorioTask;
           sumatorioDay.lunes += e.horasLunes;
@@ -254,12 +264,86 @@ export default defineComponent({
           "<td>" + sumatorioDay.sabado + "</td>" +
           "<td>" + sumatorioDay.domingo + "</td>" +
           "<td>" + sumatorioTotal + "</td>" +
+          "<td></td>" +
           "</tr></tbody>";
         $("#weekSummary").css("display", "block");
         $("#datatable").append(html);
+        // https://www.digitalocean.com/community/tutorials/js-object-reference-context-scope-instantiation
+        let vueContext = this;
+        $("td[name='editHistory']").click(function (event) {
+          vueContext.updateHistory(event.currentTarget.id);
+          console.log("Actualizando historico " + event.currentTarget.id);
+        });
       });
-
     },
+    updateHistory: function (idHistory) {
+      $("#weekSummary").css("display", "none");
+      $("#addTaskToWeek").css("display", "none");
+      let url = "https://localhost:44368/Semana/GetSingleHistoryToUpdate/" + idHistory;
+      console.log(url);
+
+      this.recuperarDatoUnicoBack(url).then(() => {
+        console.log(this.uniqueDataReceived);
+        // Cabezera de la tabla.
+        let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:22px;color:rgb(215, 89, 0);'";
+        let styleHeaderRow = "style='text-align: left;padding-left:7px;padding-right:7px;'";
+        let styleHeaderRowNumber = "style='text-align: right;padding-left:7px;padding-right:7px;font-size:18px;'";
+        let html = "<thead>" +
+          "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Lunes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Martes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Miercoles</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Jueves</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Viernes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Sabado</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Domingo</th>" +
+          "<th></th>" +
+          "</tr></thead>";
+
+        // Estilos de las filas y mostrar los datos recuperados.
+        let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+
+        // Atención, una cosa es el idTarea, y otra id, que es de la entrada al historial.
+        let styleText = "style='text-align: left;font-size:15px;padding-left:10px;padding-right:15px;'";
+        let styleInputNumber = "style='width:30px;font-size:20px;background-color:rgb(20, 43, 44);color:rgb(215, 89, 0);'";
+        html += "<tbody>" +
+          "<tr " + styleRow + "><th scope='row'>" + this.uniqueDataReceived.idTarea + "</th>" +
+          "<td " + styleText + ">" + this.uniqueDataReceived.nombreTarea + "</td>" +
+          "<td " + styleText + ">" + this.uniqueDataReceived.estadoTarea + "</td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='lunes' value='" + this.uniqueDataReceived.horasLunes + "'/></td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='martes' value='" + this.uniqueDataReceived.horasMartes + "'/></td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='miercoles' value='" + this.uniqueDataReceived.horasMiercoles + "'/></td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='jueves' value='" + this.uniqueDataReceived.horasJueves + "'/></td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='viernes' value='" + this.uniqueDataReceived.horasViernes + "'/></td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='sabado' value='" + this.uniqueDataReceived.horasSabado + "'/></td>" +
+          "<td><input " + styleInputNumber + " type='number' min='1' max='14' name='domingo' value='" + this.uniqueDataReceived.horasDomingo + "'/></td>" +
+          "<td style='padding-left:25px;padding-right:15px;color:rgb(215, 89, 0);' name='saveHistory' id='" + this.uniqueDataReceived.id + "'>Actualizar</td>" +
+          "</tr>";
+
+        $("#updateHistory").css("display", "block");
+        $("#updateHistory").append(html);
+        let vueContext = this;
+        $("td[name='saveHistory']").click(function (event) {
+          let updatedHours = {
+            lunes: $("input[name=lunes]").val(),
+            martes: $("input[name=martes]").val(),
+            miercoles: $("input[name=miercoles]").val(),
+            jueves: $("input[name=jueves]").val(),
+            viernes: $("input[name=viernes]").val(),
+            sabado: $("input[name=sabado]").val(),
+            domingo: $("input[name=domingo]").val(),
+          }
+          let urlUpdate = "https://localhost:44368/Semana/UpdateHistory/" + idHistory + "/" + updatedHours.lunes + "/" + updatedHours.martes + "/" + updatedHours.miercoles + "/" + updatedHours.jueves + "/" + updatedHours.viernes + "/" + updatedHours.sabado + "/" + updatedHours.domingo;
+          console.log(urlUpdate);
+          vueContext.recuperarDatoUnicoBack(urlUpdate).then(() => {
+            vueContext.$router.go(vueContext.$router.currentRoute);
+          })
+        });
+      });
+    },
+
     updateAvailableTasksInfo: function () {
       var selectedAvailableTask = $('#availableTasksCombo').find(":selected").val();
       console.log(selectedAvailableTask);
@@ -292,7 +376,6 @@ export default defineComponent({
         $("#btnNewTask").css("background-color", "rgb(215, 89, 0)");
         $("#btnNewTask").css("color", "rgb(20, 43, 44)");
       });
-
     },
     updateFirstTaskAvailable: function () {
       let url = "https://localhost:44368/Semana/AddFirstHistory/" + this.availableTaskId + "/" + this.userId;
@@ -435,6 +518,8 @@ export default defineComponent({
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
+  height: 100%;
+  margin: 0 auto;
 }
 
 .uniqueTable td,
@@ -462,5 +547,14 @@ export default defineComponent({
 
 .addTaskToWeek {
   display: none;
+}
+
+.updateHistory {
+  display: none;
+}
+
+.btnSubmitCancelar {
+  width: 200px;
+  color: rgb(215, 89, 0);
 }
 </style>
