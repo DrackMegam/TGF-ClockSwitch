@@ -105,7 +105,7 @@ export default defineComponent({
       availableDescription: "",
       availableStatus: "",
       availableTaskId: 0,
-      userId: 10, // mehamius
+      userId: 10, // mehamius = 10 | felix.roncero = 3
       deletedFirstSelectOption: false,
       historyItem: [],
       historyItemFull: [],
@@ -120,7 +120,7 @@ export default defineComponent({
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
-      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 2; // Para ajustarlo al horario ibérico
+      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
       let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + thisYear + "/" + thisWeek;
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
@@ -142,7 +142,7 @@ export default defineComponent({
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
-      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 2; // Para ajustarlo al horario ibérico
+      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
       let url = "https://localhost:44368/Semana/WeekSummary/" + this.userId + "/" + thisYear + "/" + thisWeek;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {
@@ -239,7 +239,7 @@ export default defineComponent({
             "<td>" + e.horasSabado + "</td>" +
             "<td>" + e.horasDomingo + "</td>" +
             "<td>" + sumatorioTask + "</td>" +
-            "<td " + styleEditButton + " name='editHistory' id='" + e.id + "'> * </td>" +
+            "<td " + styleEditButton + " name='editHistory' id='" + e.id + "'> Editar </td>" +
             "</tr>";
           sumatorioTotal += sumatorioTask;
           sumatorioDay.lunes += e.horasLunes;
@@ -338,6 +338,7 @@ export default defineComponent({
           let urlUpdate = "https://localhost:44368/Semana/UpdateHistory/" + idHistory + "/" + updatedHours.lunes + "/" + updatedHours.martes + "/" + updatedHours.miercoles + "/" + updatedHours.jueves + "/" + updatedHours.viernes + "/" + updatedHours.sabado + "/" + updatedHours.domingo;
           console.log(urlUpdate);
           vueContext.recuperarDatoUnicoBack(urlUpdate).then(() => {
+            console.log("Actualizado");
             vueContext.$router.go(vueContext.$router.currentRoute);
           })
         });

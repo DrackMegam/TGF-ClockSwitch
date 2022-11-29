@@ -6,16 +6,16 @@
     </nav>
     <div class="leftSidebar">
       <ul class="navbar-nav navbar-sidenav">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mis horas de la semana actual">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mi resumen semanal">
           <a class="nav-link">
             <i class="fa fa-fw fa-table"></i>
-            <span @click="weekTime()" class="nav-link-text">Mis horas semana actual</span>
+            <span @click="weekTime()" class="nav-link-text">Mi resumen semanal</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Horas de mis trabajadores">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Horas de Todos">
           <a class="nav-link">
             <i class="fa fa-fw fa-table"></i>
-            <span @click="goEveryone()" class="nav-link-text">Horas de mis trabajadores</span>
+            <span @click="goEveryone()" class="nav-link-text">Horas de todos</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Aniadir-Quitar Admins">

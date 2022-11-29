@@ -8,13 +8,10 @@ import EveryoneComponent from '../components/EveryoneComponent.vue'
 <template>
   <main>
     <SidebarComponent />
-<EveryoneComponent />
+    <EveryoneComponent />
     <FooterComponent />
   </main>
 </template>
 
 <style scoped>
-main{
-  background-color:gray;
-}
 </style>
