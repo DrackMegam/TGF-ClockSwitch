@@ -48,33 +48,32 @@
       </form>
     </div>
 
-    <div class="container mt-4">
+    <template v-for="data in dataReceived">
+    <div class="container mt-1">
       <form class="formularioUsuario" id="formularioUsuario">
-        <div class="form-outline mb-4">
-          <label class="form-label" for="">Usuario virtual</label>
-        </div>
         <div class="row mb-4">
           <div class="col">
             <div class="form-outline">
               <label class="form-label" for="">Nombre Usuario</label>
-              <input type="text" readonly name="nombreUsuario" class="form-control bg-dark text-white" />
+              <input type="text" :value=data.username  readonly name="nombreUsuario" class="form-control bg-dark text-white" />
             </div>
           </div>
           <div class="col-2">
             <div class="form-outline">
               <label class="form-label" for="">Identificador</label>
-              <input type="number" readonly name="idUsuario" class="form-control bg-dark text-white" />
+              <input type="number" :value=data.idUsuario readonly name="idUsuario" class="form-control bg-dark text-white" />
             </div>
           </div>
           <div class="col-3">
             <div class="form-outline">
               <label class="form-label" for="">Permisos</label>
-              <input type="text" readonly name="permisosUsuario" class="form-control bg-dark text-white" />
+              <input type="text" :value=data.isAdmin readonly name="permisosUsuario" class="form-control bg-dark text-white" />
             </div>
           </div>
         </div>
       </form>
     </div>
+    </template>
 
     <div class="test" name="test"></div>
 
@@ -124,38 +123,8 @@ export default defineComponent({
     loadUserData: function (dniPersona) {
       let url = "https://localhost:44368/Profile/GetUsersOwned/" + dniPersona;
       this.recuperarDatosBack(url).then(() => {
-        this.dataReceived.forEach(e => {
-          // Pinto por cada usuario un div.
-          let html = '<div class="container mt-4"> ' +
-            '      <form class="formularioUsuario" id="formularioUsuario">' +
-            '        <div class="form-outline mb-4">' +
-            '          <label class="form-label" for="">Usuario virtual</label>' +
-            '        </div>' +
-            '        <div class="row mb-4">' +
-            '          <div class="col">' +
-            '            <div class="form-outline">' +
-            '             <label class="form-label" for="">Nombre Usuario</label>' +
-            '             <input type="text" readonly name="nombreUsuario" class="form-control bg-dark text-white" />' +
-            '            </div>' +
-            '          </div>' +
-            '          <div class="col-2">' +
-            '           <div class="form-outline">' +
-            '              <label class="form-label" for="">Identificador</label>' +
-            '              <input type="number" readonly name="idUsuario" class="form-control bg-dark text-white" />' +
-            '            </div>' +
-            '          </div>' +
-            '          <div class="col-3">' +
-            '            <div class="form-outline">' +
-            '              <label class="form-label" for="">Permisos</label>' +
-            '              <input type="text" readonly name="permisosUsuario" class="form-control bg-dark text-white" />' +
-            '            </div>' +
-            '          </div>' +
-            '        </div>' +
-            '     </form>' +
-            '    </div>';
-
-            $("div[name='test']").append(html);
-        })
+        let contador = 1;
+        
       });
     },
     recuperarDatosBack: async function (url) {
@@ -211,6 +180,8 @@ export default defineComponent({
   height: 900px;
   width: 1500px;
   margin-left: 150px;
+  top:0px;
+  bottom:200px;
   border: 1px solid red;
 }
 </style>
