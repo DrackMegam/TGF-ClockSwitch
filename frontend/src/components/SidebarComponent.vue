@@ -18,16 +18,22 @@
             <span @click="goEveryone()" class="nav-link-text">Horas de todos</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Aniadir-Quitar Admins">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Panel de administrador">
           <a class="nav-link">
             <i class="fa fa-user-plus"></i>
             <span @click="goAdmin()" class="nav-link-text">Panel de administrador</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Aniadir-Quitar Admins">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mis Subscripciones">
           <a class="nav-link">
             <i class="fa fa-users"></i>
             <span @click="goSubs()" class="nav-link-text">Mis Subscripciones</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mi perfil">
+          <a class="nav-link">
+            <i class="fa fa-users"></i>
+            <span @click="goProfile()" class="nav-link-text">Mi perfil</span>
           </a>
         </li>
       </ul>
@@ -76,7 +82,10 @@ export default defineComponent({
     },
     goSubs() {
       this.$router.push('/subscription');
-    }
+    },
+    goProfile() {
+      this.$router.push('/profile');
+    },
   },
 });
 </script>

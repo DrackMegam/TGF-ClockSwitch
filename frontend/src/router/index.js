@@ -33,6 +33,11 @@ const router = createRouter({
       name: 'subscription',
       component: () => import('../views/SubscriptionView.vue')
     },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
+    },
   ]
 })
 
