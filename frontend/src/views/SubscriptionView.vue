@@ -14,7 +14,5 @@ import SubscriptionComponent from "../components/SubscriptionComponent.vue";
 </template>
 
 <style scoped>
-main {
-  background-color: gray;
-}
+
 </style>

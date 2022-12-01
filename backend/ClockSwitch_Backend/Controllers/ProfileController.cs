@@ -8,40 +8,82 @@ namespace ClockSwitch_Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProfileController : ControllerBase
+    public class SubscriptionController : ControllerBase
     {
 
-        private readonly ILogger<ProfileController> _logger;
+        private readonly ILogger<SubscriptionController> _logger;
         private readonly ClockSwitchDbContext _context;
 
-        public ProfileController(ILogger<ProfileController> logger, ClockSwitchDbContext context)
+        public SubscriptionController(ILogger<SubscriptionController> logger, ClockSwitchDbContext context)
         {
             _logger = logger;
             _context = context;
         }
 
 
-        [HttpGet("GetPerson/{dni}")]
-        public PersonaDto GetPerson(string dni)
+        [HttpGet("GetCurrentSubscriptions/{userId}")]
+        public List<UsuarioDto> GetCurrentSubscriptions(int userId)
         {
-            return _context.Persona.Where(i => i.Dni == dni).FirstOrDefault()!;
+            List<int> currentSubscription = _context.Suscripcion.Where(e => e.IdSuscriptor == userId).Select(i => i.IdObjetivo).ToList();
+            List<UsuarioDto> currentSubsData = new List<UsuarioDto>();
+
+            foreach (int idSub in currentSubscription)
+                currentSubsData.Add(_context.Usuario.Where(e => e.IdUsuario == idSub).FirstOrDefault()!);
+
+            return currentSubsData;
         }
 
-        [HttpGet("GetOwner/{userId}")]
-        public UsuarioDto GetOwner(int userId)
+        [HttpGet("GetAvailableSubscriptions/{userId}")]
+        public List<UsuarioDto> GetAvailableSubscriptions(int userId)
         {
-            UsuarioDto? userData = _context.Usuario.Where(i => i.IdUsuario == userId).FirstOrDefault();
+            List<int> currentSubscription = _context.Suscripcion.Where(e => e.IdSuscriptor == userId).Select(i => i.IdObjetivo).ToList();
+            List<int> allIds = _context.Usuario.Select(e => e.IdUsuario).ToList();
+            List<int> availableSubscription = allIds.Except(currentSubscription).ToList(); // Diferencia entre una lista y la otra.
 
-            if (userData == null)
-                return new UsuarioDto() { DniPersona = "SYSTEM" }; // Usuario independiente a ninguna persona física.
+            List<UsuarioDto> currentSubsData = new List<UsuarioDto>();
 
-            return userData;
+            foreach (int id in availableSubscription)
+                currentSubsData.Add(_context.Usuario.Where(e => e.IdUsuario == id).FirstOrDefault()!);
+
+            return currentSubsData;
         }
 
-        [HttpGet("GetUsersOwned/{dni}")]
-        public List<UsuarioDto> GetUsersOwned(string dni)
+        [HttpGet("Suscribe/{userId}/{idTarget}")]
+        public bool Suscribe(int userId, int idTarget)
         {
-            return _context.Usuario.Where(i => i.DniPersona == dni).ToList();
+            try
+            {
+                _context.Suscripcion.Add(new SuscripcionDto()
+                {
+                    IdSuscriptor = userId,
+                    IdObjetivo = idTarget
+                });
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug("Error al intentar insertar en la tabla <Suscripción>: " + e.ToString());
+                return false;
+            }
+
+            return true;
+        }
+
+        [HttpGet("Unsuscribe/{userId}/{idTarget}")]
+        public bool Unsuscribe(int userId, int idTarget)
+        {
+            try
+            {
+                _context.Suscripcion.Remove(_context.Suscripcion.Where(e => e.IdSuscriptor == userId && e.IdObjetivo == idTarget).FirstOrDefault()!);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug("Error al intentar eliminar en la tabla <Suscripción>: " + e.ToString());
+                return false;
+            }
+
+            return true;
         }
     }
 }

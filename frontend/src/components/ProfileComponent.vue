@@ -84,7 +84,7 @@
 import { defineComponent } from 'vue';
 import jQuery from 'jquery';
 let $ = jQuery;
-
+ // https://stackoverflow.com/questions/60238731/vue-router-showing-blank-page-when-built/60239175#60239175
 
 export default defineComponent({
   data() {
