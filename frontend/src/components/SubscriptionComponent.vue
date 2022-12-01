@@ -8,7 +8,7 @@
           <div class="row mb-2 pl-3 pb-2 listItemPersonalizado">
             <div class="col">
               <input class="form-check-input checkUser subCheck" type="checkbox" name="subCheck" :value=data.idUsuario>
-              <div class="form-outline">
+              <div class="form-outline ml-2">
                 <label class="form-label" for="">Nombre Usuario</label>
                 <input type="text" :value=data.username readonly name="nombreUsuario"
                   class="form-control bg-dark text-white" />
@@ -35,7 +35,7 @@
           <div class="row mb-2 pl-3 pb-2 listItemPersonalizado">
             <div class="col">
               <input class="form-check-input checkUser" type="checkbox" name="unsubCheck" :value=data.idUsuario>
-              <div class="form-outline">
+              <div class="form-outline ml-3">
                 <label class="form-label" for="">Nombre Usuario</label>
                 <input type="text" :value=data.username readonly name="nombreUsuario"
                   class="form-control bg-dark text-white" />
@@ -58,7 +58,10 @@
 
     </div>
 
-    <div class="container" name="subscriptionsData">data</div>
+    <div class="container" name="subscriptionsData">
+      <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable"></table>
+    </div>
+
   </div>
 </template>
 
@@ -88,12 +91,72 @@ export default defineComponent({
       let url = "https://localhost:44368/Subscription/GetAvailableSubscriptions/" + this.userId;
       this.recuperarAvailableSubs(url).then(() => { });
       url = "https://localhost:44368/Subscription/GetCurrentSubscriptions/" + this.userId;
-      this.recuperarCurrentSubs(url).then(() => { });
+      this.recuperarCurrentSubs(url).then(() => { this.loadSubsData(); });
+    },
+    loadSubsData: function () {
+      let thisYear = new Date().getFullYear();
+      let now = new Date();
+      let onejan = new Date(now.getFullYear(), 0, 1);
+      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
+      let url = "https://localhost:44368/Subscription/GetSubsData/" + this.userId + "/" + thisYear + "/" + thisWeek;
+
+      let html = "";
+      this.recuperarDatosBack(url).then(() => {
+        console.log(this.dataReceived);
+        let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:26px;color:rgb(215, 89, 0);'";
+        let styleHeaderRow = "style='text-align: left;padding-left:7px;padding-right:7px;'";
+        let styleHeaderRowNumber = "style='text-align: right;padding-left:7px;padding-right:7px;font-size:24px;'";
+        html = "<thead>" +
+          "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Usuario</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Lunes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Martes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Miercoles</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Jueves</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Viernes</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Sabado</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Domingo</th>" +
+          "<th " + styleHeaderRowNumber + " scope='col'>Total</th>" +
+          "<th></th>" +
+          "</tr></thead>";
+
+        // Estilos de las filas y mostrar los datos recuperados.
+        let styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+        let evenRow = true;
+        this.dataReceived.forEach(e => {
+          console.log(e);
+          if (evenRow) {
+            styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(20, 43, 44);font-size:24px;'";
+            evenRow = false;
+          } else {
+            styleRow = "style='text-align: right;border:2px solid black;background-color:rgb(27, 58, 59);font-size:24px;'";
+            evenRow = true;
+          }
+          let styleText = "style='text-align: left;font-size:20px;padding-left:15px;padding-right:15px;'";
+          html += "<tbody>" +
+            "<tr " + styleRow + "><th scope='row'>" + e.idUsuario + "</th>" +
+            "<td " + styleText + ">" + e.nombreUsuario + "</td>" +
+            "<td>" + e.sumatorioLunes + "</td>" +
+            "<td>" + e.sumatorioMartes + "</td>" +
+            "<td>" + e.sumatorioMiercoles + "</td>" +
+            "<td>" + e.sumatorioJueves + "</td>" +
+            "<td>" + e.sumatorioViernes + "</td>" +
+            "<td>" + e.sumatorioSabado + "</td>" +
+            "<td>" + e.sumatorioDomingo + "</td>" +
+            "<td style='color:rgb(215, 89, 0);font-weight:bold;'>" + e.total + "</td>" +
+            "<td></td>" +
+            "</tr>";
+        });
+        $("#datatable").append(html);
+      });
+
+
+
     },
     suscribe: function () {
       let idChecked = [];
       var checkboxes = document.querySelectorAll('input[type=checkbox][name=subCheck]:checked')
-      
+
       for (var i = 0; i < checkboxes.length; i++) {
         idChecked.push(checkboxes[i].value)
       }
@@ -111,7 +174,7 @@ export default defineComponent({
     unsuscribe: function () {
       let idChecked = [];
       var checkboxes = document.querySelectorAll('input[type=checkbox][name=unsubCheck]:checked')
-      
+
       for (var i = 0; i < checkboxes.length; i++) {
         idChecked.push(checkboxes[i].value)
       }
@@ -226,8 +289,9 @@ export default defineComponent({
   margin-right: 20px;
 }
 
-.alredySubscriptions {
-  margin-left: 100px;
+.checkUser {
+  width: 15px;
+  height: 15px;
 }
 
 .manageSubscriptions {
@@ -242,5 +306,13 @@ export default defineComponent({
   font-size: 18px;
   color: black;
   width: 75%;
+}
+
+.uniqueTable {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+  margin-top:50px;
 }
 </style>
