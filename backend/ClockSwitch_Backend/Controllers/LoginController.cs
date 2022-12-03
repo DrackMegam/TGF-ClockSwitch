@@ -22,7 +22,7 @@ namespace ClockSwitch_Backend.Controllers
         [HttpGet("{username}/{password}")]
         public bool Get(string username, string password)
         {
-            UsuarioDto? userFound = _context.Usuario.Where(e => e.Username.Equals(password)).FirstOrDefault();
+            UsuarioDto? userFound = _context.Usuario.Where(e => e.Username.Equals(username)).FirstOrDefault();
             if (userFound == null)
                 return false; // No se ha encontrado el usuario.
             if (!password.Equals(userFound.Password))
@@ -30,7 +30,6 @@ namespace ClockSwitch_Backend.Controllers
 
             _logger.LogDebug("Se ha logeado el usuario <" + username + "> con password <" + password + ">");
             return true;
-
         }
 
         [HttpGet("GimmeId/{username}")]
