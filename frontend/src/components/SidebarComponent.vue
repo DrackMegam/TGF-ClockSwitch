@@ -2,7 +2,7 @@
   <div class="mainSidebar">
     <nav class="navbar topSidebar">
       <a @click="volver()" class="navbar-brand"> ClockSwitch</a>
-      <span>Bienvenido usuario</span>
+      <span>Bienvenido {{this.username}}</span>
     </nav>
     <div class="leftSidebar">
       <ul class="navbar-nav navbar-sidenav">
@@ -50,9 +50,10 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
-      user: String,
-      password: String,
     };
+  },
+  props:{
+    username: String
   },
   created() {
 
@@ -69,22 +70,22 @@ export default defineComponent({
       this.$router.push('/');
     },
     weekTime() {
-      this.$router.push('/weekTime');
+      this.$router.push('/weekTime/'+this.username);
     },
     goExport() {
-      this.$router.push('/export');
+      this.$router.push('/export/'+this.username);
     },
     goEveryone() {
-      this.$router.push('/everyone');
+      this.$router.push('/everyone/'+this.username);
     },
     goAdmin() {
-      this.$router.push('/admin');
+      this.$router.push('/admin/'+this.username);
     },
     goSubs() {
-      this.$router.push('/subscription');
+      this.$router.push('/subscription/'+this.username);
     },
     goProfile() {
-      this.$router.push('/profile');
+      this.$router.push('/profile/'+this.username);
     },
   },
 });

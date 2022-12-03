@@ -1,11 +1,15 @@
 <template>
+  <SidebarComponent :username=this.$route.params.username />
   <div class="container main mt-4">
     <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable"></table>
   </div>
+  <FooterComponent />
 </template>
 
 <script lang="js">
 import { defineComponent } from 'vue';
+import FooterComponent from '../components/FooterComponent.vue'
+import SidebarComponent from '../components/SidebarComponent.vue'
 import jQuery from 'jquery';
 let $ = jQuery;
 
@@ -16,6 +20,10 @@ export default defineComponent({
       dataReceived: [],
       userId: 10, // mehamius = 10 | felix.roncero = 3
     };
+  },
+  components: {
+    SidebarComponent,
+    FooterComponent
   },
   created() {
 
@@ -133,6 +141,6 @@ export default defineComponent({
   border-collapse: collapse;
   width: 100%;
   height: 100%;
-  
+
 }
 </style>

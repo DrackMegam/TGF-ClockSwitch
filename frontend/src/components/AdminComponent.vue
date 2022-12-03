@@ -1,4 +1,5 @@
 <template>
+  <SidebarComponent :username=this.$route.params.username />
   <div class="main">
     <div class="top container">
       <div class="bigButton AddPerson" v-on:click="addPerson()">Añadir Persona</div>
@@ -128,10 +129,14 @@
       </form>
     </div>
   </div>
+  <FooterComponent />
+
 </template>
 
 <script lang="js">
 import { defineComponent } from 'vue';
+import FooterComponent from '../components/FooterComponent.vue'
+import SidebarComponent from '../components/SidebarComponent.vue'
 import jQuery from 'jquery';
 let $ = jQuery;
 
@@ -142,6 +147,10 @@ export default defineComponent({
       dataBoolean: false,
       dniDelete: "",
     };
+  },
+  components: {
+    SidebarComponent,
+    FooterComponent
   },
   created() {
 

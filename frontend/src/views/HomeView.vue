@@ -5,6 +5,7 @@ import LoginComponent from '../components/LoginComponent.vue'
 <template>
   <main>
     <LoginComponent />
+    asdasdas
   </main>
 </template>
 

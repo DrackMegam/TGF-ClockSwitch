@@ -48,7 +48,7 @@ export default defineComponent({
           .then((data) => {
             this.loggedIn = data;
             console.log("Respuesta: " + this.loggedIn);
-            this.loggedIn ? this.$router.push("/main") : this.error = true;
+            this.loggedIn ? this.$router.push("/main/"+user.value) : this.error = true;
           })
           .catch(e => {
             console.error(e);
@@ -76,10 +76,7 @@ export default defineComponent({
   font-size: 30px;
   color: white;
 
-  &:focus {
-    outline: 0;
-    border-color: #1ab188;
-  }
+
 }
 
 .form {
@@ -101,9 +98,7 @@ export default defineComponent({
   color: white;
   margin-bottom: 0.5rem;
 
-  &:first-of-type {
-    margin-top: 0rem;
-  }
+
 }
 
 img {
@@ -124,10 +119,7 @@ img {
   border: 1px solid white;
   color: white;
 
-  &:focus {
-    outline: 0;
-    border-color: #1ab188;
-  }
+
 }
 
 .form-submit {
@@ -139,9 +131,7 @@ img {
   cursor: pointer;
   transition: background 0.2s;
 
-  &:hover {
-    background: #0b9185;
-  }
+
 }
 
 .principal {

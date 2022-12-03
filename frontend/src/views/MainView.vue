@@ -1,8 +1,3 @@
-<script setup>
-import FooterComponent from '../components/FooterComponent.vue'
-import SidebarComponent from '../components/SidebarComponent.vue'
-</script>
-
 <template>
   <main>
     <SidebarComponent />
@@ -10,6 +5,11 @@ import SidebarComponent from '../components/SidebarComponent.vue'
     <FooterComponent />
   </main>
 </template>
+
+<script setup>
+import FooterComponent from '../components/FooterComponent.vue'
+import SidebarComponent from '../components/SidebarComponent.vue'
+</script>
 
 <style scoped>
 main{

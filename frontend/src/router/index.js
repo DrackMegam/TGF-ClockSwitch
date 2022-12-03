@@ -1,42 +1,42 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+// https://stackoverflow.com/questions/45296505/how-to-use-vue-router-params
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../components/LoginComponent.vue')
     },
     {
-      path: '/main',
+      path: '/main/:username',
       name: 'main',
-      component: () => import('../views/MainView.vue')
+      component: () => import('../components/MainComponent.vue'),
     },
     {
-      path: '/weektime',
+      path: '/weektime/:username',
       name: 'weektime',
-      component: () => import('../views/WeekTimeView.vue')
+      component: () => import('../components/WeekTimeComponent.vue')
     },
     {
-      path: '/everyone',
+      path: '/everyone/:username',
       name: 'everyone',
-      component: () => import('../views/EveryoneView.vue')
+      component: () => import('../components/EveryoneComponent.vue')
     },
     {
-      path: '/admin',
+      path: '/admin/:username',
       name: 'admin',
-      component: () => import('../views/AdminView.vue')
+      component: () => import('../components/AdminComponent.vue')
     },
     {
-      path: '/subscription',
+      path: '/subscription/:username',
       name: 'subscription',
-      component: () => import('../views/SubscriptionView.vue')
+      component: () => import('../components/SubscriptionComponent.vue')
     },
     {
-      path: '/profile',
+      path: '/profile/:username',
       name: 'profile',
-      component: () => import('../views/ProfileView.vue')
+      component: () => import('../components/ProfileComponent.vue')
     },
   ]
 })

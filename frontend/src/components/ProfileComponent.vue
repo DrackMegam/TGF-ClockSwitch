@@ -1,4 +1,5 @@
 <template>
+  <SidebarComponent :username=this.$route.params.username />
   <div class="container main">
 
     <div class="container mb-4 mt-2">
@@ -49,42 +50,49 @@
     </div>
 
     <template v-for="data in dataReceived">
-    <div class="container mt-1">
-      <form class="formularioUsuario" id="formularioUsuario">
-        <div class="row mb-4">
-          <div class="col">
-            <div class="form-outline">
-              <label class="form-label" for="">Nombre Usuario</label>
-              <input type="text" :value=data.username  readonly name="nombreUsuario" class="form-control bg-dark text-white" />
+      <div class="container mt-1">
+        <form class="formularioUsuario" id="formularioUsuario">
+          <div class="row mb-4">
+            <div class="col">
+              <div class="form-outline">
+                <label class="form-label" for="">Nombre Usuario</label>
+                <input type="text" :value=data.username readonly name="nombreUsuario"
+                  class="form-control bg-dark text-white" />
+              </div>
+            </div>
+            <div class="col-2">
+              <div class="form-outline">
+                <label class="form-label" for="">Identificador</label>
+                <input type="number" :value=data.idUsuario readonly name="idUsuario"
+                  class="form-control bg-dark text-white" />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-outline">
+                <label class="form-label" for="">Permisos</label>
+                <input type="text" :value=data.isAdmin readonly name="permisosUsuario"
+                  class="form-control bg-dark text-white" />
+              </div>
             </div>
           </div>
-          <div class="col-2">
-            <div class="form-outline">
-              <label class="form-label" for="">Identificador</label>
-              <input type="number" :value=data.idUsuario readonly name="idUsuario" class="form-control bg-dark text-white" />
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="form-outline">
-              <label class="form-label" for="">Permisos</label>
-              <input type="text" :value=data.isAdmin readonly name="permisosUsuario" class="form-control bg-dark text-white" />
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
     </template>
 
     <div class="test" name="test"></div>
 
   </div>
+  <FooterComponent />
+
 </template>
 
 <script lang="js">
 import { defineComponent } from 'vue';
+import FooterComponent from '../components/FooterComponent.vue'
+import SidebarComponent from '../components/SidebarComponent.vue'
 import jQuery from 'jquery';
 let $ = jQuery;
- // https://stackoverflow.com/questions/60238731/vue-router-showing-blank-page-when-built/60239175#60239175
+// https://stackoverflow.com/questions/60238731/vue-router-showing-blank-page-when-built/60239175#60239175
 
 export default defineComponent({
   data() {
@@ -93,6 +101,10 @@ export default defineComponent({
       userId: 10, // mehamius = 10 | felix.roncero = 3
       uniqueDataReceived: {},
     };
+  },
+  components: {
+    SidebarComponent,
+    FooterComponent
   },
   created() {
 
@@ -124,7 +136,7 @@ export default defineComponent({
       let url = "https://localhost:44368/Profile/GetUsersOwned/" + dniPersona;
       this.recuperarDatosBack(url).then(() => {
         let contador = 1;
-        
+
       });
     },
     recuperarDatosBack: async function (url) {
@@ -180,8 +192,8 @@ export default defineComponent({
   height: 900px;
   width: 1500px;
   margin-left: 150px;
-  top:0px;
-  bottom:200px;
+  top: 0px;
+  bottom: 200px;
   border: 1px solid red;
 }
 </style>
