@@ -60,7 +60,7 @@
     </div>
 
     <div class="container" name="subscriptionsData" v-if="(currentSubs.length > 0)">
-      <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable"></table>
+      <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable" name="datatable"></table>
     </div>
 
   </div>
@@ -183,9 +183,8 @@ export default defineComponent({
       }
 
       this.suscribeDone(idChecked).then(() => {
-        console.log("Lo del router");
-        console.log(this.$route.params);
-        //this.$router.push('/main/'+this.$route.params.username);
+        setTimeout(() => this.refreshPage(), 500);
+
       });
     },
     suscribeDone: async function (ids) {
@@ -203,10 +202,7 @@ export default defineComponent({
       }
 
       this.unsuscribeDone(idChecked).then(() => {
-        console.log("Lo del router");
-        console.log(this.$route.params);
-        this.$router.push('/main/'+this.$route.params.username);
-        this.$router.push('/subscription/'+this.$route.params.username);
+        setTimeout(() => this.refreshPage(), 500);
       });
     },
     unsuscribeDone: async function (ids) {
@@ -272,6 +268,14 @@ export default defineComponent({
           });
       }
       catch (e) { console.log(e) }
+    },
+    refreshPage: async function () {
+      this.dataReceived.length = 0;
+      this.currentSubs.length = 0;
+      this.availableSubs.length = 0;
+      this.uniqueDataReceived = {};
+      //$("table{name='datatable'}").empty();
+      this.getSubscriptions();
     },
   },
   beforeMount() {
