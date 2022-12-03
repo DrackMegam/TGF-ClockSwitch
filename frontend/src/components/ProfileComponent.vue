@@ -98,7 +98,7 @@ export default defineComponent({
   data() {
     return {
       dataReceived: [],
-      userId: 10, // mehamius = 10 | felix.roncero = 3
+      userId: 0, // mehamius = 10 | felix.roncero = 3
       uniqueDataReceived: {},
     };
   },
@@ -113,6 +113,19 @@ export default defineComponent({
 
   },
   methods: {
+    getUserId: async function (username) {
+      try {
+        return fetch("https://localhost:44368/Login/GimmeId/"+username)
+          .then((response) => response.json())
+          .then((data) => {
+            this.userId = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
     getProfileData: function () {
       let url = "https://localhost:44368/Profile/GetOwner/" + this.userId;
       this.recuperarDatoUnicoBack(url).then(() => {
@@ -169,7 +182,9 @@ export default defineComponent({
     },
   },
   beforeMount() {
-    this.getProfileData();
+    this.getUserId(this.$route.params.username).then(() => {
+      this.getProfileData();
+    });
   }
 });
 </script>

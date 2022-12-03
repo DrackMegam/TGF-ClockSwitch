@@ -59,7 +59,7 @@
 
     </div>
 
-    <div class="container" name="subscriptionsData">
+    <div class="container" name="subscriptionsData" v-if="(currentSubs.length > 0)">
       <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable"></table>
     </div>
 
@@ -81,7 +81,7 @@ export default defineComponent({
       currentSubs: [],
       availableSubs: [],
       uniqueDataReceived: {},
-      userId: 10, // mehamius = 10 | felix.roncero = 3
+      userId: 0, // mehamius = 10 | felix.roncero = 3
     };
   },
   components: {
@@ -95,6 +95,19 @@ export default defineComponent({
 
   },
   methods: {
+    getUserId: async function (username) {
+      try {
+        return fetch("https://localhost:44368/Login/GimmeId/" + username)
+          .then((response) => response.json())
+          .then((data) => {
+            this.userId = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
     getSubscriptions: function () {
       let url = "https://localhost:44368/Subscription/GetAvailableSubscriptions/" + this.userId;
       this.recuperarAvailableSubs(url).then(() => { });
@@ -170,7 +183,9 @@ export default defineComponent({
       }
 
       this.suscribeDone(idChecked).then(() => {
-        this.$router.go(this.$router.currentRoute);
+        console.log("Lo del router");
+        console.log(this.$route.params);
+        //this.$router.push('/main/'+this.$route.params.username);
       });
     },
     suscribeDone: async function (ids) {
@@ -188,7 +203,10 @@ export default defineComponent({
       }
 
       this.unsuscribeDone(idChecked).then(() => {
-        this.$router.go(this.$router.currentRoute);
+        console.log("Lo del router");
+        console.log(this.$route.params);
+        this.$router.push('/main/'+this.$route.params.username);
+        this.$router.push('/subscription/'+this.$route.params.username);
       });
     },
     unsuscribeDone: async function (ids) {
@@ -257,7 +275,9 @@ export default defineComponent({
     },
   },
   beforeMount() {
-    this.getSubscriptions();
+    this.getUserId(this.$route.params.username).then(() => {
+      this.getSubscriptions();
+    });
   }
 });
 </script>

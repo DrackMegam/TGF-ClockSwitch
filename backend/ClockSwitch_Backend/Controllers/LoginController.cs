@@ -32,5 +32,13 @@ namespace ClockSwitch_Backend.Controllers
             return true;
 
         }
+
+        [HttpGet("GimmeId/{username}")]
+        public int GetUserId(string username)
+        {
+            return _context.Usuario.Where(e => e.Username == username).Select(i => i.IdUsuario).FirstOrDefault();
+        }
+
+
     }
 }

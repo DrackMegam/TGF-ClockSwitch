@@ -18,7 +18,7 @@ export default defineComponent({
   data() {
     return {
       dataReceived: [],
-      userId: 10, // mehamius = 10 | felix.roncero = 3
+      userId: 0, // mehamius = 10 | felix.roncero = 3
     };
   },
   components: {
@@ -32,6 +32,19 @@ export default defineComponent({
 
   },
   methods: {
+    getUserId: async function (username) {
+      try {
+        return fetch("https://localhost:44368/Login/GimmeId/"+username)
+          .then((response) => response.json())
+          .then((data) => {
+            this.userId = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
     getAllHours: function () {
       let thisYear = new Date().getFullYear();
       let now = new Date();
@@ -111,7 +124,10 @@ export default defineComponent({
     },
   },
   beforeMount() {
-    this.getAllHours();
+    // Primero asigno el ID, después que ejecute el resto de consultas.
+    this.getUserId(this.$route.params.username).then(() => {
+      this.getAllHours();
+    });
   }
 });
 </script>

@@ -110,7 +110,7 @@ export default defineComponent({
       availableDescription: "",
       availableStatus: "",
       availableTaskId: 0,
-      userId: 10, // mehamius = 10 | felix.roncero = 3
+      userId: 0, // mehamius = 10 | felix.roncero = 3
       deletedFirstSelectOption: false,
       historyItem: [],
       historyItemFull: [],
@@ -123,6 +123,19 @@ export default defineComponent({
   methods: {
     funciono: function () {
       console.log("funciono");
+    },
+    getUserId: async function (username) {
+      try {
+        return fetch("https://localhost:44368/Login/GimmeId/"+username)
+          .then((response) => response.json())
+          .then((data) => {
+            this.userId = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
     },
     addNewTask: function () {
       // Relleno el combo con datos nuevos.
@@ -453,7 +466,9 @@ export default defineComponent({
     }
   },
   beforeMount() {
-    this.getThisWeekSummary();
+    this.getUserId(this.$route.params.username).then(() => {
+      this.getThisWeekSummary();
+    });
   }
 });
 </script>
