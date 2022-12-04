@@ -49,7 +49,7 @@ export default defineComponent({
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
-      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
+      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 2; // Para ajustarlo al horario ibérico
       let url = "https://localhost:44368/Everyone/AllHours/" + thisYear + "/" + thisWeek;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {

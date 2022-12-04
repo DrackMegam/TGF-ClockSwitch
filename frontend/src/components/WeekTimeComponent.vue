@@ -63,14 +63,14 @@
           <div class="col">
             <div class="form-outline">
               <label class="form-label" for="">Descripción</label>
-              <input readonly type="text" placeholder="Descripcion de la tarea" id="descripcionNueva"
-                class="form-control bg-dark text-white" />
+              <input readonly type="text" placeholder="Descripcion de la tarea" name="descripcionNueva"
+                id="descripcionNueva" class="form-control bg-dark text-white" />
             </div>
           </div>
           <div class="col-lg3">
             <div class="form-outline">
               <label class="form-label" for="">Estado</label>
-              <input readonly type="text" placeholder="Estado actual de la tarea" id="estadoNueva"
+              <input readonly type="text" placeholder="Estado actual de la tarea" name="estadoNueva" id="estadoNueva"
                 class="form-control bg-dark text-white" />
             </div>
           </div>
@@ -126,6 +126,26 @@ export default defineComponent({
     funciono: function () {
       console.log("funciono");
     },
+    reloadSummary: function () {
+      // TODO: implementar
+      this.dataReceived = [];
+      this.uniqueDataReceived = {};
+      this.dataBoolean = false;
+      this.availableDescription = "";
+      this.availableStatus = "";
+      this.availableTaskId = 0;
+      this.deletedFirstSelectOption = false;
+      this.historyItem = [];
+      this.historyItemFull = [];
+      $("#datatable").empty();
+      $("#updateHistory").empty();
+      $("#addTaskToWeek").css("display", "none");
+      $("#btnAddTask").css("display", "block");
+      $("#firstTask").css("display", "none");
+      this.getTimeData().then(() => {
+        this.getThisWeekSummary();
+      });
+    },
     getTimeData: async function () {
       try {
         return fetch("https://localhost:44368/Semana/GetTimeData")
@@ -165,6 +185,7 @@ export default defineComponent({
       */
       let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       this.dataReceived.length = 0;
+      $("#newTasksCombo").empty();
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
         let html = "";
@@ -196,9 +217,6 @@ export default defineComponent({
           this.showThisWeekSummary(this.actualYear, this.actualWeekOfYear);
         }
       });
-    },
-    reload: function () {
-      this.$router.go(this.$router.currentRoute);
     },
     showFirstTaskForm: function () {
       console.log("Esta semana no tiene historial.");
@@ -383,7 +401,8 @@ export default defineComponent({
           console.log(urlUpdate);
           vueContext.recuperarDatoUnicoBack(urlUpdate).then(() => {
             console.log("Actualizado");
-            vueContext.$router.go(vueContext.$router.currentRoute);
+            // TODO: recarga activa
+            vueContext.reloadSummary();
           })
         });
       });
@@ -425,7 +444,8 @@ export default defineComponent({
     updateFirstTaskAvailable: function () {
       let url = "https://localhost:44368/Semana/AddFirstHistory/" + this.availableTaskId + "/" + this.userId;
       this.contactarBack(url).then(() => {
-        this.$router.go(this.$router.currentRoute);
+        // TODO: recarga activa
+        this.reloadSummary();
       });
     },
     contactarBack: async function (url) {
