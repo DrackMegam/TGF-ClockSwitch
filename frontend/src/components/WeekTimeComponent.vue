@@ -114,6 +114,8 @@ export default defineComponent({
       deletedFirstSelectOption: false,
       historyItem: [],
       historyItemFull: [],
+      actualYear: 0,
+      actualWeekOfYear: 0
     };
   },
   components: {
@@ -124,9 +126,25 @@ export default defineComponent({
     funciono: function () {
       console.log("funciono");
     },
+    getTimeData: async function () {
+      try {
+        return fetch("https://localhost:44368/Semana/GetTimeData")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // Se de seguro lo que devuelve. Un array de 2 valores.
+            this.actualYear = data[0];
+            this.actualWeekOfYear = data[1];
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
     getUserId: async function (username) {
       try {
-        return fetch("https://localhost:44368/Login/GimmeId/"+username)
+        return fetch("https://localhost:44368/Login/GimmeId/" + username)
           .then((response) => response.json())
           .then((data) => {
             this.userId = data;
@@ -139,11 +157,13 @@ export default defineComponent({
     },
     addNewTask: function () {
       // Relleno el combo con datos nuevos.
+      /*
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
       let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
-      let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + thisYear + "/" + thisWeek;
+      */
+      let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
@@ -160,18 +180,20 @@ export default defineComponent({
 
     },
     getThisWeekSummary: function () {
+      /*
       // https://javascript.plainenglish.io/how-to-get-the-week-of-year-of-a-given-date-in-javascript-c8fe0d764b5d
       let thisYear = new Date().getFullYear();
       let now = new Date();
       let onejan = new Date(now.getFullYear(), 0, 1);
       let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
-      let url = "https://localhost:44368/Semana/WeekSummary/" + this.userId + "/" + thisYear + "/" + thisWeek;
+      */
+      let url = "https://localhost:44368/Semana/WeekSummary/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {
         if (this.dataReceived[0].ano == 1928) {
           this.showFirstTaskForm();
         } else {
-          this.showThisWeekSummary(thisYear, thisWeek);
+          this.showThisWeekSummary(this.actualYear, this.actualWeekOfYear);
         }
       });
     },
@@ -467,7 +489,9 @@ export default defineComponent({
   },
   beforeMount() {
     this.getUserId(this.$route.params.username).then(() => {
-      this.getThisWeekSummary();
+      this.getTimeData().then(() => {
+        this.getThisWeekSummary();
+      });
     });
   }
 });

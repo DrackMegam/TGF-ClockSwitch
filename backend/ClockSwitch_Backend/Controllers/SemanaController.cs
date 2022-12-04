@@ -20,18 +20,31 @@ namespace ClockSwitch_Backend.Controllers
             _context = context;
         }
 
+        [HttpGet("GetTimeData")]
+        public List<int> GetTimeData()
+        {
+            // Al principio lo calculaba con el front, pero es MUCHO más sencillo que lo haga el back.
+            // Que trabaje, que para eso está.
+            CultureInfo myCI = new CultureInfo("es-ES"); // https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar.getweekofyear?view=net-7.0
+            int actualWeek = myCI.Calendar.GetWeekOfYear(DateTime.Now, myCI.DateTimeFormat.CalendarWeekRule, myCI.DateTimeFormat.FirstDayOfWeek);
+
+            List<int> timeData = new List<int>();
+            timeData.Add(DateTime.Today.Year);
+            timeData.Add(actualWeek);
+
+            return timeData;
+        }
 
         [HttpGet("WeekSummary/{user}/{year}/{week}")]
         public List<HistorialDto> GetSemana(int user, int year, int week)
         {
-            int actualYear = DateTime.Today.Year;
-            CultureInfo myCI = new CultureInfo("es-ES"); // https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar.getweekofyear?view=net-7.0
-            int actualWeek = myCI.Calendar.GetWeekOfYear(DateTime.Now, myCI.DateTimeFormat.CalendarWeekRule, myCI.DateTimeFormat.FirstDayOfWeek);
-
             List<HistorialDto> historial = _context.Historial.Where(e => e.Ano == year && e.Semana == week && e.IdUsuario == user).ToList();
 
             if (historial.Count == 0)
             {
+                CultureInfo myCI = new CultureInfo("es-ES"); // https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar.getweekofyear?view=net-7.0
+                int actualWeek = myCI.Calendar.GetWeekOfYear(DateTime.Now, myCI.DateTimeFormat.CalendarWeekRule, myCI.DateTimeFormat.FirstDayOfWeek);
+
                 historial.Add(new HistorialDto
                 {
                     Ano = 1928, // Añado una entrada para indicar que NO hay nada esta semana.
@@ -52,7 +65,7 @@ namespace ClockSwitch_Backend.Controllers
             List<HistorialDto> historial = GetSemana(user, year, week);
 
 
-            foreach(var e in historial)
+            foreach (var e in historial)
                 fullHistory.Add(new HistorialFullDto
                 {
                     Id = e.Id,
@@ -69,7 +82,7 @@ namespace ClockSwitch_Backend.Controllers
                     HorasDomingo = e.HorasDomingo,
                     NombreTarea = _context.Tarea.Where(i => i.IdTarea == e.IdTarea).FirstOrDefault()?.Nombre,
                     EstadoTarea = _context.Tarea.Where(i => i.IdTarea == e.IdTarea).FirstOrDefault()?.Estado,
-                });;
+                }); ;
 
 
 
@@ -89,11 +102,11 @@ namespace ClockSwitch_Backend.Controllers
             List<TareaDto> allTasks = _context.Tarea.ToList();
             List<TareaDto> newTasks = new List<TareaDto>();
 
-            foreach(TareaDto task in allTasks)
+            foreach (TareaDto task in allTasks)
             {
                 bool workingOnIt = false;
-                foreach(int id in currentTasksIds)
-                    if(task.IdTarea == id)
+                foreach (int id in currentTasksIds)
+                    if (task.IdTarea == id)
                         workingOnIt = true;
 
                 if (!workingOnIt)
@@ -143,7 +156,7 @@ namespace ClockSwitch_Backend.Controllers
         }
 
         [HttpGet("UpdateHistory/{id}/{lunes}/{martes}/{miercoles}/{jueves}/{viernes}/{sabado}/{domingo}")]
-        public bool UpdateHistory(int id,double lunes, double martes, double miercoles, double jueves, double viernes, double sabado, double domingo)
+        public bool UpdateHistory(int id, double lunes, double martes, double miercoles, double jueves, double viernes, double sabado, double domingo)
         {
             // No requiero de semana y año, pues el ID del historico es único por entrada semanal.
             HistorialDto? historyToUpdate = _context.Historial.Where(e => e.Id == id).FirstOrDefault();
@@ -161,7 +174,8 @@ namespace ClockSwitch_Backend.Controllers
                 historyToUpdate.HorasDomingo = domingo;
 
                 _context.SaveChanges();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 _logger.LogDebug("Error al intentar actualizar en la tabla <Historial>: " + e.ToString());
                 return false;
@@ -193,12 +207,13 @@ namespace ClockSwitch_Backend.Controllers
                     HorasDomingo = 0
                 });
                 _context.SaveChanges();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                _logger.LogDebug("Error al añadir primera entrada al historial:"+e);
+                _logger.LogDebug("Error al añadir primera entrada al historial:" + e);
                 return false;
             }
-            return true; 
+            return true;
         }
     }
 }
