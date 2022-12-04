@@ -38,6 +38,12 @@ namespace ClockSwitch_Backend.Controllers
             return _context.Usuario.Where(e => e.Username == username).Select(i => i.IdUsuario).FirstOrDefault();
         }
 
+        [HttpGet("AmIAdmin/{username}")]
+        public int AmIAdmin(string username)
+        {
+            return _context.Usuario.Where(e => e.Username == username).Select(i => i.IsAdmin).FirstOrDefault();
+        }
+
 
     }
 }

@@ -18,13 +18,13 @@
             <span @click="goEveryone()" class="nav-link-text">Horas de todos</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Panel de administrador">
+        <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right" title="Panel de administrador">
           <a class="nav-link">
             <i class="fa fa-user-plus"></i>
             <span @click="goAdmin()" class="nav-link-text">Panel de administrador</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mis Subscripciones">
+        <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right" title="Mis Subscripciones">
           <a class="nav-link">
             <i class="fa fa-users"></i>
             <span @click="goSubs()" class="nav-link-text">Mis Subscripciones</span>
@@ -50,6 +50,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
+      isAdmin: 0
     };
   },
   props:{
@@ -66,6 +67,20 @@ export default defineComponent({
 
   },
   methods: {
+    showAdminOptions: function () {
+      try {
+        return fetch("https://localhost:44368/Login/AmIAdmin/"+this.username)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            this.isAdmin = data; // Me devuelve un 1 o un 0.
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
     volver() {
       this.$router.push('/');
     },
@@ -88,6 +103,9 @@ export default defineComponent({
       this.$router.push('/profile/'+this.username);
     },
   },
+  beforeMount() {
+    this.showAdminOptions();
+  }
 });
 </script>
 
