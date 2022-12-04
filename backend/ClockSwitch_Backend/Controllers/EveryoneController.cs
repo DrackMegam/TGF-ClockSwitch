@@ -55,7 +55,7 @@ namespace ClockSwitch_Backend.Controllers
                     + sumCurrentWeek.SumatorioJueves + sumCurrentWeek.SumatorioViernes + sumCurrentWeek.SumatorioSabado + sumCurrentWeek.SumatorioDomingo);
                 horasGlobales.Add(sumCurrentWeek);
             }
-            return horasGlobales.OrderByDescending(i => i.Total).ToList();
+            return horasGlobales.OrderBy(i => i.IdUsuario).ToList();
         }
     }
 }

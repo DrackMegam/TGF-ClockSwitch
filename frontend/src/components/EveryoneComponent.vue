@@ -18,7 +18,9 @@ export default defineComponent({
   data() {
     return {
       dataReceived: [],
-      userId: 0, // mehamius = 10 | felix.roncero = 3
+      userId: 0,
+      actualYear: 0,
+      actualWeekOfYear: 0
     };
   },
   components: {
@@ -34,7 +36,7 @@ export default defineComponent({
   methods: {
     getUserId: async function (username) {
       try {
-        return fetch("https://localhost:44368/Login/GimmeId/"+username)
+        return fetch("https://localhost:44368/Login/GimmeId/" + username)
           .then((response) => response.json())
           .then((data) => {
             this.userId = data;
@@ -45,12 +47,23 @@ export default defineComponent({
       }
       catch (e) { console.log(e) }
     },
+    getTimeData: async function () {
+      try {
+        return fetch("https://localhost:44368/Semana/GetTimeData")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            this.actualYear = data[0];
+            this.actualWeekOfYear = data[1];
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      catch (e) { console.log(e) }
+    },
     getAllHours: function () {
-      let thisYear = new Date().getFullYear();
-      let now = new Date();
-      let onejan = new Date(now.getFullYear(), 0, 1);
-      let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 2; // Para ajustarlo al horario ibérico
-      let url = "https://localhost:44368/Everyone/AllHours/" + thisYear + "/" + thisWeek;
+      let url = "https://localhost:44368/Everyone/AllHours/" + this.actualYear + "/" + this.actualWeekOfYear;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
@@ -126,7 +139,9 @@ export default defineComponent({
   beforeMount() {
     // Primero asigno el ID, después que ejecute el resto de consultas.
     this.getUserId(this.$route.params.username).then(() => {
-      this.getAllHours();
+      this.getTimeData().then(() => {
+        this.getAllHours();
+      });
     });
   }
 });
