@@ -2,11 +2,23 @@
   <SidebarComponent :username=this.$route.params.username />
   <div class="main">
     <div id="weekSummary" class="container  weekSummary  mt-4">
+      <div class="container btnSuperiores mb-4" name="botonesSuperiores">
+        <div name="btnSemanaAtras" class="glyphicon glyphicon-chevron-left" v-on:click="timeBackward()">
+          &#60;
+        </div>
+        <div name="weekInfo">
+          {{ dateTimeString }}
+        </div>
+        <div name="btnSemanaAdelante" class="glyphicon glyphicon-chevron-left" v-on:click="timeFoward()">
+          &#62;
+        </div>
+      </div>
       <table id="datatable" class="table table-striped datatable uniqueTable"></table>
       <button type="button" id="btnAddTask" v-on:click="addNewTask()" class="btn btn-block mb-4 btnAddTask">
         Añadir nueva tarea
       </button>
     </div>
+
     <div id="firstTask" class="container firstTask mt-4">
       <form class="formularioPrimeraTarea" id="formularioPrimeraTarea">
         <div class="form-outline" id="">
@@ -49,7 +61,7 @@
     </div>
 
     <div id="addTaskToWeek" class="container addTaskToWeek mt-4">
-      <form class="formularioPrimeraTarea" id="formularioPrimeraTarea">
+      <form class="formularioNormal" id="formularioNormal">
 
         <div class="form-outline mt-4">
           <label class="form-label" for="">Tarea</label>
@@ -114,8 +126,10 @@ export default defineComponent({
       deletedFirstSelectOption: false,
       historyItem: [],
       historyItemFull: [],
+      startingWeekOfYear: 0,
       actualYear: 0,
-      actualWeekOfYear: 0
+      actualWeekOfYear: 0,
+      dateTimeString: "Semana actual"
     };
   },
   components: {
@@ -126,8 +140,69 @@ export default defineComponent({
     funciono: function () {
       console.log("funciono");
     },
+    getDateOfWeek: function (w, y) {
+      // https://stackoverflow.com/questions/16590500/calculate-date-from-week-number-in-javascript
+      var d = (1 + w * 7); // 1st of January + 7 days for each week
+      let date = new Date(y, 0, d);
+
+      // https://stackoverflow.com/questions/4156434/javascript-get-the-first-day-of-the-week-from-current-date
+      let day = date.getDay();
+      let diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      let epochFirstDay = date.setDate(diff);
+
+
+      console.log("FECHAS");
+
+      let months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      let month = (months[date.getMonth()]);
+      let dayOfMonth = date.getDate();
+      
+      this.dateTimeString = "Semana del "+dayOfMonth+" de "+month;
+      console.log(this.dateTimeString);
+    },
+    timeFoward: function () {
+      if (this.actualWeekOfYear != this.startingWeekOfYear) {
+        console.log("Yendo hacia delante...");
+        if (this.actualWeekOfYear == 52) {
+          this.actualWeekOfYear == 1; // Cambio de año.
+          this.actualYear++;
+        } else {
+          this.actualWeekOfYear++;
+        }
+        this.moveInTime();
+        this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
+      }
+    },
+    timeBackward: function () {
+      console.log("Yendo hacia atrás...");
+      console.log("Yendo hacia delante...");
+      if (this.actualWeekOfYear == 1) {
+        this.actualWeekOfYear == 52; // Cambio de año.
+        this.actualYear--;
+      } else {
+        this.actualWeekOfYear--;
+      }
+      this.moveInTime();
+      this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
+    },
+    moveInTime: function () {
+      this.dataReceived = [];
+      this.uniqueDataReceived = {};
+      this.dataBoolean = false;
+      this.availableDescription = "";
+      this.availableStatus = "";
+      this.availableTaskId = 0;
+      this.deletedFirstSelectOption = false;
+      this.historyItem = [];
+      this.historyItemFull = [];
+      $("#datatable").empty();
+      $("#updateHistory").empty();
+      $("#addTaskToWeek").css("display", "none");
+      $("#btnAddTask").css("display", "block");
+      $("#firstTask").css("display", "none");
+      this.getThisWeekSummary();
+    },
     reloadSummary: function () {
-      // TODO: implementar
       this.dataReceived = [];
       this.uniqueDataReceived = {};
       this.dataBoolean = false;
@@ -154,6 +229,7 @@ export default defineComponent({
             console.log(data);
             // Se de seguro lo que devuelve. Un array de 2 valores.
             this.actualYear = data[0];
+            this.startingWeekOfYear = data[1];
             this.actualWeekOfYear = data[1];
           })
           .catch(error => {
@@ -234,6 +310,7 @@ export default defineComponent({
       $("#btnFirstTask").attr("disabled", true); // Deshabilito el botón hasta seleccionar Tarea.
       $("#btnFirstTask").css("background-color", "rgb(20, 43, 44)");
       $("#btnFirstTask").css("color", "white");
+      $("#btnAddTask").css("display", "none");
       $("#firstTask").css("display", "block");
     },
     showThisWeekSummary: async function (year, weekOfYear) {
@@ -407,7 +484,6 @@ export default defineComponent({
         });
       });
     },
-
     updateAvailableTasksInfo: function () {
       var selectedAvailableTask = $('#availableTasksCombo').find(":selected").val();
       console.log(selectedAvailableTask);
@@ -553,6 +629,11 @@ export default defineComponent({
   font-size: 18px;
 }
 
+.formularioNormal {
+  color: white;
+  font-size: 18px;
+}
+
 .btnSubmitPersonalizado {
   background-color: rgb(20, 43, 44);
   font-weight: bolder;
@@ -625,5 +706,11 @@ export default defineComponent({
 .btnSubmitCancelar {
   width: 200px;
   color: rgb(215, 89, 0);
+}
+
+.btnSuperiores {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 </style>
