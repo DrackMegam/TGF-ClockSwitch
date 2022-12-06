@@ -267,26 +267,37 @@ export default defineComponent({
     },
     getPerson: function () {
       this.ocultarTodo();
-      let html = "<tr><th scope='col'>ID</th>" +
-        "<th scope='col'>Nombre</th>" +
-        "<th scope='col'>Apellidos</th>" +
-        "<th scope='col'>Descripcion</th>" +
-        "<th scope='col'>Telefono</th>" +
-        "<th scope='col'>Localización</th>" +
-        "<th scope='col'>Eliminar</th>" +
+      let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:22px;color:rgb(215, 89, 0);'";
+      let styleHeaderRow = "style='font-weight:bold;text-align: left;padding-left:0px;padding-right:10px;'";
+      let html = "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>DNI</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Apellidos</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Descripcion</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Telefono</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Localización</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Eliminar</th>" +
         "</tr>";
       let url = "https://localhost:44368/AdminPanel/GetPerson";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
-        console.log(this.dataReceived);
+        let styleRow = "";
+        let evenRow = true;
         this.dataReceived.forEach(element => {
-          html += "<tr><td scope='row'>" + element.dni + "</td>" +
-            "<td>" + element.nombre + "</td>" +
-            "<td>" + element.apellidos + "</td>" +
-            "<td>" + element.descripcion + "</td>" +
-            "<td>" + element.localidad + "</td>" +
-            "<td>" + element.telefono + "</td>" +
-            "<td><button value='" + element.dni + "' name='botonBorrarPersona'>X</button></td>" +
+          if (evenRow) {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+            evenRow = false;
+          } else {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
+            evenRow = true;
+          }
+
+          html += "<tr " + styleRow + "><td scope='row'>" + element.dni + "</td>" +
+            "<td style='font-size:18px'>" + element.nombre + "</td>" +
+            "<td style='font-size:18px'>" + element.apellidos + "</td>" +
+            "<td style='font-size:15px'>" + element.descripcion + "</td>" +
+            "<td style='font-size:15px'>" + element.telefono + "</td>" +
+            "<td style='font-size:15px'>" + element.localidad + "</td>" +
+            "<td style='text-align: center'><button value='" + element.dni + "' name='botonBorrarPersona'>X</button></td>" +
             "</tr>";
         });
         $("#datatable").append(html);
@@ -300,17 +311,27 @@ export default defineComponent({
     },
     getUser: function () {
       this.ocultarTodo();
-      let html = "<tr><th scope='col'>IdUsuario</th>" +
-        "<th scope='col'>Dni</th>" +
-        "<th scope='col'>Usuario</th>" +
-        "<th scope='col'>Eliminar</th>" +
+      let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:22px;color:rgb(215, 89, 0);'";
+      let styleHeaderRow = "style='font-weight:bold;text-align: left;padding-left:0px;padding-right:10px;'";
+      let html = "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Dni</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Usuario</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Eliminar</th>" +
         "</tr>";
       let url = "https://localhost:44368/AdminPanel/GetUser/noAdmins";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
-        console.log(this.dataReceived);
+        let styleRow = "";
+        let evenRow = true;
         this.dataReceived.forEach(element => {
-          html += "<tr><td scope='row'>" + element.idUsuario + "</td>" +
+          if (evenRow) {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+            evenRow = false;
+          } else {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
+            evenRow = true;
+          }
+          html += "<tr " + styleRow + "><td scope='row'>" + element.idUsuario + "</td>" +
             "<td>" + element.dniPersona + "</td>" +
             "<td>" + element.username + "</td>" +
             "<td><button name='botonBorrarUsuario' value='" + element.idUsuario + "'>X</button></td>" +
@@ -327,17 +348,27 @@ export default defineComponent({
     },
     getAdmins: function () {
       this.ocultarTodo();
-      let html = "<tr><th scope='col'>IdUsuario</th>" +
-        "<th scope='col'>Dni</th>" +
-        "<th scope='col'>Usuario</th>" +
-        "<th scope='col'>Eliminar</th>" +
+      let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:22px;color:rgb(215, 89, 0);'";
+      let styleHeaderRow = "style='font-weight:bold;text-align: left;padding-left:0px;padding-right:10px;'";
+      let html = "<tr " + styleHeader + "><th  " + styleHeaderRow + " scope='col'>ID</th>" +
+        "<th  " + styleHeaderRow + " scope='col'>Dni</th>" +
+        "<th  " + styleHeaderRow + " scope='col'>Usuario</th>" +
+        "<th  " + styleHeaderRow + " scope='col'>Eliminar</th>" +
         "</tr>";
       let url = "https://localhost:44368/AdminPanel/GetUser/admins";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
-        console.log(this.dataReceived);
+        let styleRow = "";
+        let evenRow = true;
         this.dataReceived.forEach(element => {
-          html += "<tr><td scope='row'>" + element.idUsuario + "</td>" +
+          if (evenRow) {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+            evenRow = false;
+          } else {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
+            evenRow = true;
+          }
+          html += "<tr " + styleRow + "><td scope='row'>" + element.idUsuario + "</td>" +
             "<td>" + element.dniPersona + "</td>" +
             "<td>" + element.username + "</td>" +
             "<td><button name='botonBorrarUsuario' value='" + element.idUsuario + "'>X</button></td>" +
@@ -354,22 +385,32 @@ export default defineComponent({
     },
     getTask: function () {
       this.ocultarTodo();
-      let html = "<tr><th scope='col'>ID</th>" +
-        "<th scope='col'>Nombre</th>" +
-        "<th scope='col'>Descripcion</th>" +
-        "<th scope='col'>Estado</th>" +
-        "<th scope='col'>Cancelar</th>" +
+      let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:22px;color:rgb(215, 89, 0);'";
+      let styleHeaderRow = "style='font-weight:bold;text-align: left;padding-left:0px;padding-right:10px;'";
+      let html = "<tr " + styleHeader + "><th " + styleHeaderRow + " scope='col'>ID</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Nombre</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Descripcion</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Cancelar</th>" +
         "</tr>";
       let url = "https://localhost:44368/AdminPanel/GetTask/all";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
-        console.log(this.dataReceived);
+        let styleRow = "";
+        let evenRow = true;
         this.dataReceived.forEach(element => {
-          html += "<tr><td scope='row'>" + element.idTarea + "</td>" +
+          if (evenRow) {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(20, 43, 44);font-size:20px;'";
+            evenRow = false;
+          } else {
+            styleRow = "style='margin-bottom:4px;text-align: left;border:2px solid black;background-color:rgb(27, 58, 59);font-size:20px;'";
+            evenRow = true;
+          }
+          html += "<tr " + styleRow + "><td scope='row'>" + element.idTarea + "</td>" +
             "<td>" + element.nombre + "</td>" +
-            "<td>" + element.descripcion + "</td>" +
-            "<td>" + element.estado + "</td>" +
-            "<td><button name='botonBorrarTask' value='" + element.idTarea + "'>X</button></td>" +
+            "<td style='font-size:15px'>" + element.descripcion + "</td>" +
+            "<td  style='font-size:15px'>" + element.estado + "</td>" +
+            "<td style='text-align:center'><button name='botonBorrarTask' value='" + element.idTarea + "'>X</button></td>" +
             "</tr>";
         });
         $("#datatable").append(html);
@@ -484,8 +525,8 @@ Naranja secundario: rgb(180, 54, 0)
   border-color: rgb(153, 46, 0);
   font-weight: bolder;
   font-size: 30px;
-  background-color: rgb(215, 89, 0);
-  color: black;
+  background-color: rgb(20, 43, 44);
+  color: rgb(215, 89, 0);
   text-justify: distribute;
 }
 
