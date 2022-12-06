@@ -121,6 +121,10 @@ export default defineComponent({
 @import url("../lib/startbootstrap-sb-admin/vendor/datatables/dataTables.bootstrap4.min.css");
 @import url("../lib/toastr.js/toastr.min.css");
 
+.mainSidebar{
+z-index: 10;
+}
+
 .topSidebar {
   position: fixed;
   top: 0;

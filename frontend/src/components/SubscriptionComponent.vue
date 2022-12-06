@@ -1,6 +1,6 @@
 <template>
   <SidebarComponent :username=this.$route.params.username />
-  <div class="main container">
+  <div class="mainSubs container">
     <div class="container justify-content-end manageSubscriptions" name="manageSubscriptions">
 
       <div class="container list-group availableSubscriptions" name="availableSubscriptions">
@@ -59,7 +59,20 @@
 
     </div>
 
-    <div class="container" name="subscriptionsData" v-if="(currentSubs.length > 0)">
+    <div class="container subscriptionsData" name="subscriptionsData" v-if="(currentSubs.length > 0)">
+
+      <div class="container btnSuperiores mb-4" name="botonesSuperiores">
+        <div name="btnSemanaAtras" class="flecha" v-on:click="timeBackward()">
+          &#60;&#60;
+        </div>
+        <div name="weekInfo" class="weekInfo mt-3">
+          {{ dateTimeString }}
+        </div>
+        <div name="btnSemanaAdelante" class="flecha" v-on:click="timeFoward()">
+          &#62;&#62;
+        </div>
+      </div>
+
       <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable" name="datatable"></table>
     </div>
 
@@ -81,9 +94,11 @@ export default defineComponent({
       currentSubs: [],
       availableSubs: [],
       uniqueDataReceived: {},
-      userId: 0, 
-      actualYear:0,
-      actualWeekOfYear:0
+      userId: 0,
+      startingWeekOfYear: 0,
+      actualYear: 0,
+      actualWeekOfYear: 0,
+      dateTimeString: "Semana actual"
     };
   },
   components: {
@@ -117,6 +132,7 @@ export default defineComponent({
           .then((data) => {
             console.log(data);
             this.actualYear = data[0];
+            this.startingWeekOfYear = data[1];
             this.actualWeekOfYear = data[1];
           })
           .catch(error => {
@@ -125,6 +141,46 @@ export default defineComponent({
       }
       catch (e) { console.log(e) }
     },
+    getDateOfWeek: function (w, y) {
+      // https://stackoverflow.com/questions/16590500/calculate-date-from-week-number-in-javascript
+      var d = (1 + w * 7); // 1st of January + 7 days for each week
+      let date = new Date(y, 0, d);
+
+      // https://stackoverflow.com/questions/4156434/javascript-get-the-first-day-of-the-week-from-current-date
+      let day = date.getDay();
+      let diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      let epochFirstDay = date.setDate(diff);
+
+      let months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      let month = (months[date.getMonth()]);
+      let dayOfMonth = date.getDate();
+      this.dateTimeString = "Semana del " + dayOfMonth + " de " + month;
+    },
+    timeFoward: function () {
+      if (this.actualWeekOfYear != this.startingWeekOfYear) {
+        console.log("Yendo hacia delante...");
+        if (this.actualWeekOfYear == 52) {
+          this.actualWeekOfYear == 1; // Cambio de año.
+          this.actualYear++;
+        } else {
+          this.actualWeekOfYear++;
+        }
+        this.refreshPage();
+        this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
+      }
+    },
+    timeBackward: function () {
+      console.log("Yendo hacia atrás...");
+      console.log("Yendo hacia delante...");
+      if (this.actualWeekOfYear == 1) {
+        this.actualWeekOfYear == 52; // Cambio de año.
+        this.actualYear--;
+      } else {
+        this.actualWeekOfYear--;
+      }
+      this.refreshPage();
+      this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
+    },
     getSubscriptions: function () {
       let url = "https://localhost:44368/Subscription/GetAvailableSubscriptions/" + this.userId;
       this.recuperarAvailableSubs(url).then(() => { });
@@ -132,7 +188,7 @@ export default defineComponent({
       this.recuperarCurrentSubs(url).then(() => { this.loadSubsData(); });
     },
     loadSubsData: function () {
-     let url = "https://localhost:44368/Subscription/GetSubsData/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
+      let url = "https://localhost:44368/Subscription/GetSubsData/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       let html = "";
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
@@ -291,7 +347,7 @@ export default defineComponent({
   },
   beforeMount() {
     this.getUserId(this.$route.params.username).then(() => {
-      this.getTimeData().then(()=>{
+      this.getTimeData().then(() => {
         this.getSubscriptions();
       })
     });
@@ -311,12 +367,20 @@ export default defineComponent({
 @import url("../lib/startbootstrap-sb-admin/vendor/datatables/dataTables.bootstrap4.min.css");
 @import url("../lib/toastr.js/toastr.min.css");
 
-.main {
+.mainSubs {
   display: flex;
   flex-direction: column;
   height: 900px;
   width: 1500px;
   margin-left: 160px;
+  z-index: 0;
+}
+
+.subscriptionsData {
+  width: 100%;
+  height: 100%;
+  margin-top: 20px;
+  padding-bottom: 300px;
 }
 
 .checkUser {
@@ -358,6 +422,27 @@ export default defineComponent({
   border-collapse: collapse;
   width: 100%;
   height: 100%;
-  margin-top: 50px;
+
+  padding-bottom: 100px;
+}
+
+.btnSuperiores {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.flecha {
+  font-weight: bold;
+  font-size: 45px;
+  letter-spacing: -10px;
+  color: rgb(180, 54, 0);
+}
+
+.weekInfo {
+  font-weight: bold;
+  font-size: 25px;
+  letter-spacing: 2px;
+  color: rgb(215, 89, 0);
 }
 </style>
