@@ -37,8 +37,6 @@ export default defineComponent({
   methods: {
     funciono() {
       this.$router.push("/main");
-
-      //console.log(this.user + this.password);
     },
     async login() {
       console.log("Intentando loggear al usuario " + user.value + " con password: " + password.value);
@@ -48,7 +46,7 @@ export default defineComponent({
           .then((data) => {
             this.loggedIn = data;
             console.log("Respuesta: " + this.loggedIn);
-            this.loggedIn ? this.$router.push("/main/"+user.value) : this.error = true;
+            this.loggedIn ? this.$router.push("/main/" + user.value) : this.error = true;
           })
           .catch(e => {
             console.error(e);
@@ -75,8 +73,6 @@ export default defineComponent({
   padding-top: 2px;
   font-size: 30px;
   color: white;
-
-
 }
 
 .form {
@@ -97,8 +93,6 @@ export default defineComponent({
   margin-top: 2rem;
   color: white;
   margin-bottom: 0.5rem;
-
-
 }
 
 img {
@@ -118,8 +112,6 @@ img {
   background-image: none;
   border: 1px solid white;
   color: white;
-
-
 }
 
 .form-submit {
@@ -130,8 +122,6 @@ img {
   padding: 1rem 0;
   cursor: pointer;
   transition: background 0.2s;
-
-
 }
 
 .principal {

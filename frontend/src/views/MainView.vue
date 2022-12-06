@@ -13,6 +13,6 @@ import SidebarComponent from '../components/SidebarComponent.vue'
 
 <style scoped>
 main{
-  background-color:gray;
+  background-color:red;
 }
 </style>

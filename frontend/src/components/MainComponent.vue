@@ -1,8 +1,6 @@
 <template>
   <main>
     <SidebarComponent :username=this.$route.params.username />
-    <h1>soy el componente</h1>
-    <h2>aaa: {{this.$route.params.username}}</h2>
     <FooterComponent />
   </main>
 </template>
@@ -54,13 +52,5 @@ export default defineComponent({
 @import url("../lib/startbootstrap-sb-admin/vendor/font-awesome/css/font-awesome.min.css");
 @import url("../lib/startbootstrap-sb-admin/vendor/datatables/dataTables.bootstrap4.min.css");
 @import url("../lib/toastr.js/toastr.min.css");
-
-/*
-Verde principal: rgb(10, 33, 34)
-Verde secundario: rgb(20, 43, 44)
-
-Naranja principal: rgb(215, 89, 0)
-Naranja secundario: rgb(180, 54, 0)
-*/
 
 </style>

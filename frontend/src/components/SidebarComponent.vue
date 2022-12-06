@@ -1,8 +1,10 @@
 <template>
   <div class="mainSidebar">
     <nav class="navbar topSidebar">
-      <a @click="volver()" class="navbar-brand"> ClockSwitch</a>
-      <span>Bienvenido {{this.username}}</span>
+      <a @click="main()" class="navbar-brand"> <img src="../assets/ClockSwitchLogo.png" class="logoCS"
+          alt="ClockSwitch"></a>
+      <span class="welcome mt-4">Bienvenido <span class="userWelcome">{{ this.username }}</span></span>
+
     </nav>
     <div class="leftSidebar">
       <ul class="navbar-nav navbar-sidenav">
@@ -18,13 +20,15 @@
             <span @click="goEveryone()" class="nav-link-text">Horas de todos</span>
           </a>
         </li>
-        <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right" title="Panel de administrador">
+        <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right"
+          title="Panel de administrador">
           <a class="nav-link">
             <i class="fa fa-user-plus"></i>
             <span @click="goAdmin()" class="nav-link-text">Panel de administrador</span>
           </a>
         </li>
-        <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right" title="Mis Subscripciones">
+        <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right"
+          title="Mis Subscripciones">
           <a class="nav-link">
             <i class="fa fa-users"></i>
             <span @click="goSubs()" class="nav-link-text">Mis Subscripciones</span>
@@ -38,6 +42,11 @@
         </li>
       </ul>
 
+      <div class="disconnect">
+        <button type="button" id="btnDisconnect" @click="volver()" class="btn btn-block mb-4 btnDisconnect">
+          Desconectar
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +62,7 @@ export default defineComponent({
       isAdmin: 0
     };
   },
-  props:{
+  props: {
     username: String
   },
   created() {
@@ -69,7 +78,7 @@ export default defineComponent({
   methods: {
     showAdminOptions: function () {
       try {
-        return fetch("https://localhost:44368/Login/AmIAdmin/"+this.username)
+        return fetch("https://localhost:44368/Login/AmIAdmin/" + this.username)
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
@@ -84,23 +93,26 @@ export default defineComponent({
     volver() {
       this.$router.push('/');
     },
+    main() {
+      this.$router.push('/main/' + this.username);
+    },
     weekTime() {
-      this.$router.push('/weekTime/'+this.username);
+      this.$router.push('/weekTime/' + this.username);
     },
     goExport() {
-      this.$router.push('/export/'+this.username);
+      this.$router.push('/export/' + this.username);
     },
     goEveryone() {
-      this.$router.push('/everyone/'+this.username);
+      this.$router.push('/everyone/' + this.username);
     },
     goAdmin() {
-      this.$router.push('/admin/'+this.username);
+      this.$router.push('/admin/' + this.username);
     },
     goSubs() {
-      this.$router.push('/subscription/'+this.username);
+      this.$router.push('/subscription/' + this.username);
     },
     goProfile() {
-      this.$router.push('/profile/'+this.username);
+      this.$router.push('/profile/' + this.username);
     },
   },
   beforeMount() {
@@ -121,8 +133,8 @@ export default defineComponent({
 @import url("../lib/startbootstrap-sb-admin/vendor/datatables/dataTables.bootstrap4.min.css");
 @import url("../lib/toastr.js/toastr.min.css");
 
-.mainSidebar{
-z-index: 10;
+.mainSidebar {
+  z-index: 10;
 }
 
 .topSidebar {
@@ -157,5 +169,42 @@ z-index: 10;
 .nav-item {
   margin-top: 20px;
   margin-left: 10px;
+}
+
+.disconnect {
+  position: fixed;
+  margin-left: 20px;
+  bottom: 0px;
+}
+
+.btnDisconnect {
+  width: 250px;
+  background-color: rgb(10, 33, 34);
+  border: 1px solid rgb(215, 89, 0);
+  border-radius: 9px;
+  color: rgb(215, 89, 0);
+  letter-spacing: 5px;
+  font-weight: bold;
+}
+
+.welcome {
+  font-size: 20px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: rgb(180, 54, 0);
+}
+
+.userWelcome {
+  padding-left: 5px;
+  letter-spacing: 0px;
+  font-weight: bold;
+  color: rgb(180, 54, 0);
+}
+
+.logoCS {
+  position: fixed;
+  top:-10px;
+  width: 250px;
+  height: 95px;
 }
 </style>
