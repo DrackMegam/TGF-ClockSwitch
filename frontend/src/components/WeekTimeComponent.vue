@@ -3,14 +3,14 @@
   <div class="main">
     <div id="weekSummary" class="container  weekSummary  mt-4">
       <div class="container btnSuperiores mb-4" name="botonesSuperiores">
-        <div name="btnSemanaAtras" class="glyphicon glyphicon-chevron-left" v-on:click="timeBackward()">
-          &#60;
+        <div name="btnSemanaAtras" class="flecha" v-on:click="timeBackward()">
+          &#60;&#60;
         </div>
-        <div name="weekInfo">
+        <div name="weekInfo" class="weekInfo mt-3">
           {{ dateTimeString }}
         </div>
-        <div name="btnSemanaAdelante" class="glyphicon glyphicon-chevron-left" v-on:click="timeFoward()">
-          &#62;
+        <div name="btnSemanaAdelante" class="flecha" v-on:click="timeFoward()">
+          &#62;&#62;
         </div>
       </div>
       <table id="datatable" class="table table-striped datatable uniqueTable"></table>
@@ -710,5 +710,19 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.flecha{
+  font-weight: bold;
+  font-size: 45px;
+  letter-spacing: -10px;
+  color: rgb(180, 54, 0);
+}
+
+.weekInfo{
+  font-weight: bold;
+  font-size: 25px;
+  letter-spacing: 2px;
+  color: rgb(215, 89, 0);
 }
 </style>
