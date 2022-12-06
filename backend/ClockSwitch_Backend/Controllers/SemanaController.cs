@@ -184,20 +184,17 @@ namespace ClockSwitch_Backend.Controllers
             return true!; // Esto NUNCA va a ser nulo por que desde el FRONT no puede hacer la petición manualmente.
         }
 
-        [HttpGet("AddFirstHistory/{idTarea}/{idUsuario}")]
-        public bool AddFirstHistory(int idTarea, int idUsuario)
+        [HttpGet("AddTaskHistory/{idTarea}/{idUsuario}/{week}/{year}")]
+        public bool AddTaskHistory(int idTarea, int idUsuario, int week, int year)
         {
-            int actualYear = DateTime.Today.Year;
-            CultureInfo myCI = new CultureInfo("es-ES"); // https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar.getweekofyear?view=net-7.0
-            int actualWeek = myCI.Calendar.GetWeekOfYear(DateTime.Now, myCI.DateTimeFormat.CalendarWeekRule, myCI.DateTimeFormat.FirstDayOfWeek);
             try
             {
                 _context.Historial.Add(new HistorialDto()
                 {
                     IdTarea = idTarea,
                     IdUsuario = idUsuario,
-                    Ano = actualYear,
-                    Semana = actualWeek,
+                    Ano = year,
+                    Semana = week,
                     HorasLunes = 0,
                     HorasMartes = 0,
                     HorasMiercoles = 0,
@@ -210,7 +207,7 @@ namespace ClockSwitch_Backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogDebug("Error al añadir primera entrada al historial:" + e);
+                _logger.LogDebug("Error al añadir entrada al historial:" + e);
                 return false;
             }
             return true;

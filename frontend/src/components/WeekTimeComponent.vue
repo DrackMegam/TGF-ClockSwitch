@@ -122,7 +122,7 @@ export default defineComponent({
       availableDescription: "",
       availableStatus: "",
       availableTaskId: 0,
-      userId: 0, // mehamius = 10 | felix.roncero = 3
+      userId: 0,
       deletedFirstSelectOption: false,
       historyItem: [],
       historyItemFull: [],
@@ -150,15 +150,10 @@ export default defineComponent({
       let diff = date.getDate() - day + (day === 0 ? -6 : 1);
       let epochFirstDay = date.setDate(diff);
 
-
-      console.log("FECHAS");
-
       let months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       let month = (months[date.getMonth()]);
       let dayOfMonth = date.getDate();
-      
-      this.dateTimeString = "Semana del "+dayOfMonth+" de "+month;
-      console.log(this.dateTimeString);
+      this.dateTimeString = "Semana del " + dayOfMonth + " de " + month;
     },
     timeFoward: function () {
       if (this.actualWeekOfYear != this.startingWeekOfYear) {
@@ -212,6 +207,7 @@ export default defineComponent({
       this.deletedFirstSelectOption = false;
       this.historyItem = [];
       this.historyItemFull = [];
+      this.dateTimeString = "Semana actual";
       $("#datatable").empty();
       $("#updateHistory").empty();
       $("#addTaskToWeek").css("display", "none");
@@ -262,6 +258,7 @@ export default defineComponent({
       let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       this.dataReceived.length = 0;
       $("#newTasksCombo").empty();
+      $("#newTasksCombo").append('<option selected value="0">- Vacío -</option>');
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
         let html = "";
@@ -272,9 +269,6 @@ export default defineComponent({
         $("#btnAddTask").css("display", "none");
         $("#addTaskToWeek").css("display", "block");
       });
-
-
-
     },
     getThisWeekSummary: function () {
       /*
@@ -299,6 +293,11 @@ export default defineComponent({
       // Recupero las tareas que NO estén canceladas.
       let url = "https://localhost:44368/Semana/GetAvailableTask";
       this.dataReceived.length = 0;
+      $("#availableTasksCombo").empty();
+      $("#availableTasksCombo").append('<option selected value="0">- Vacío -</option>');
+      $("#descripcionPrimera").val('');
+      $("#estadoPrimera").val('');
+
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
         let html = "";
@@ -518,9 +517,8 @@ export default defineComponent({
       });
     },
     updateFirstTaskAvailable: function () {
-      let url = "https://localhost:44368/Semana/AddFirstHistory/" + this.availableTaskId + "/" + this.userId;
+      let url = "https://localhost:44368/Semana/AddTaskHistory/" + this.availableTaskId + "/" + this.userId + "/" + this.actualWeekOfYear + "/" + this.actualYear;
       this.contactarBack(url).then(() => {
-        // TODO: recarga activa
         this.reloadSummary();
       });
     },
