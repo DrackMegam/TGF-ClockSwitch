@@ -1,7 +1,9 @@
 <template>
   <SidebarComponent :username=this.$route.params.username />
   <div class="main">
+
     <div id="weekSummary" class="container  weekSummary  mt-4">
+
       <div class="container btnSuperiores mb-4" name="botonesSuperiores">
         <div name="btnSemanaAtras" class="flecha" v-on:click="timeBackward()">
           &#60;&#60;
@@ -13,6 +15,7 @@
           &#62;&#62;
         </div>
       </div>
+
       <table id="datatable" class="table table-striped datatable uniqueTable"></table>
       <button type="button" id="btnAddTask" v-on:click="addNewTask()" class="btn btn-block mb-4 btnAddTask">
         Añadir nueva tarea
@@ -334,7 +337,7 @@ export default defineComponent({
           "<th " + styleHeaderRowNumber + " scope='col'>Viernes</th>" +
           "<th " + styleHeaderRowNumber + " scope='col'>Sabado</th>" +
           "<th " + styleHeaderRowNumber + " scope='col'>Domingo</th>" +
-          "<th " + styleHeaderRowNumber + " scope='col'>Total</th>" +
+          "<th " + styleHeaderRow + " scope='col'>Total</th>" +
           "<th></th>" +
           "</tr></thead>";
         let sumatorioTask = 0;

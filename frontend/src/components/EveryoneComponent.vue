@@ -1,6 +1,19 @@
 <template>
   <SidebarComponent :username=this.$route.params.username />
   <div class="container main mt-4">
+
+    <div class="container btnSuperiores mb-4" name="botonesSuperiores">
+      <div name="btnSemanaAtras" class="flecha" v-on:click="timeBackward()">
+        &#60;&#60;
+      </div>
+      <div name="weekInfo" class="weekInfo mt-3">
+        {{ dateTimeString }}
+      </div>
+      <div name="btnSemanaAdelante" class="flecha" v-on:click="timeFoward()">
+        &#62;&#62;
+      </div>
+    </div>
+
     <table id="datatable" class="table table-striped tableUpdate uniqueTable datatable"></table>
   </div>
   <FooterComponent />
@@ -19,8 +32,10 @@ export default defineComponent({
     return {
       dataReceived: [],
       userId: 0,
+      startingWeekOfYear: 0,
       actualYear: 0,
-      actualWeekOfYear: 0
+      actualWeekOfYear: 0,
+      dateTimeString: "Semana actual"
     };
   },
   components: {
@@ -47,6 +62,46 @@ export default defineComponent({
       }
       catch (e) { console.log(e) }
     },
+    getDateOfWeek: function (w, y) {
+      // https://stackoverflow.com/questions/16590500/calculate-date-from-week-number-in-javascript
+      var d = (1 + w * 7); // 1st of January + 7 days for each week
+      let date = new Date(y, 0, d);
+
+      // https://stackoverflow.com/questions/4156434/javascript-get-the-first-day-of-the-week-from-current-date
+      let day = date.getDay();
+      let diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      let epochFirstDay = date.setDate(diff);
+
+      let months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      let month = (months[date.getMonth()]);
+      let dayOfMonth = date.getDate();
+      this.dateTimeString = "Semana del " + dayOfMonth + " de " + month;
+    },
+    timeFoward: function () {
+      if (this.actualWeekOfYear != this.startingWeekOfYear) {
+        console.log("Yendo hacia delante...");
+        if (this.actualWeekOfYear == 52) {
+          this.actualWeekOfYear == 1; // Cambio de año.
+          this.actualYear++;
+        } else {
+          this.actualWeekOfYear++;
+        }
+        this.getAllHours(this.actualWeekOfYear, this.actualYear);
+        this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
+      }
+    },
+    timeBackward: function () {
+      console.log("Yendo hacia atrás...");
+      console.log("Yendo hacia delante...");
+      if (this.actualWeekOfYear == 1) {
+        this.actualWeekOfYear == 52; // Cambio de año.
+        this.actualYear--;
+      } else {
+        this.actualWeekOfYear--;
+      }
+      this.getAllHours(this.actualWeekOfYear, this.actualYear);
+      this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
+    },
     getTimeData: async function () {
       try {
         return fetch("https://localhost:44368/Semana/GetTimeData")
@@ -54,6 +109,7 @@ export default defineComponent({
           .then((data) => {
             console.log(data);
             this.actualYear = data[0];
+            this.startingWeekOfYear = data[1];
             this.actualWeekOfYear = data[1];
           })
           .catch(error => {
@@ -65,13 +121,13 @@ export default defineComponent({
     getAllHours: function () {
       let url = "https://localhost:44368/Everyone/AllHours/" + this.actualYear + "/" + this.actualWeekOfYear;
       console.log(url);
+      this.dataReceived.length=0;
       this.recuperarDatosBack(url).then(() => {
-        console.log(this.dataReceived);
         this.showData();
       });
     },
     showData: function () {
-      console.log(this.dataReceived);
+      $("#datatable").empty();
       console.log("Pintando la tabla...");
       // Cabezera de la tabla.
       let styleHeader = "style='border:2px solid black;font-weight:bolder;background-color:rgb(10, 33, 34);font-size:26px;color:rgb(215, 89, 0);'";
@@ -87,7 +143,7 @@ export default defineComponent({
         "<th " + styleHeaderRowNumber + " scope='col'>Viernes</th>" +
         "<th " + styleHeaderRowNumber + " scope='col'>Sabado</th>" +
         "<th " + styleHeaderRowNumber + " scope='col'>Domingo</th>" +
-        "<th " + styleHeaderRowNumber + " scope='col'>Total</th>" +
+        "<th " + styleHeaderRow + " scope='col'>Total</th>" +
         "<th></th>" +
         "</tr></thead>";
 
@@ -173,5 +229,25 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 
+}
+
+.flecha {
+  font-weight: bold;
+  font-size: 45px;
+  letter-spacing: -10px;
+  color: rgb(180, 54, 0);
+}
+
+.weekInfo {
+  font-weight: bold;
+  font-size: 25px;
+  letter-spacing: 2px;
+  color: rgb(215, 89, 0);
+}
+
+.btnSuperiores {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 </style>
