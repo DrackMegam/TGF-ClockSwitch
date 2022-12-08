@@ -170,6 +170,12 @@ export default defineComponent({
     },
     addPerson: function () {
       this.ocultarTodo();
+      $("#dniForm").val("");
+      $("#nombreForm").val("");
+      $("#apellidosForm").val("");
+      $("#telefonoForm").val("");
+      $("#localidadForm").val("");
+      $("#descripcionForm").val("");
       $("#formularioPersona").css("display", "block");
     },
     addPersonSubmit: async function () {
@@ -213,7 +219,9 @@ export default defineComponent({
         $("#comboDnis").append(html);
       });
 
-
+      $("#nombreUserForm").val("");
+      $("#passUserForm").val("");
+      $("#passUserForm2").val("");
       $("#formularioUsuario").css("display", "block");
     },
     addUserSubmit: function () {
@@ -243,6 +251,8 @@ export default defineComponent({
     },
     addTask: function () {
       this.ocultarTodo();
+      $("#descripcionTareaForm").val("");
+      $("#tareaForm").val("");
       $("#formularioTarea").css("display", "block");
     },
     addTaskSubmit: function () {

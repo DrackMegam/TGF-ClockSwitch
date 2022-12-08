@@ -662,6 +662,7 @@ export default defineComponent({
 .datatable {
   display: block;
   width: 100%;
+  text-justify: auto;
 }
 
 /* https://www.w3schools.com/css/tryit.asp?filename=trycss_table_fancy */
@@ -671,6 +672,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   margin: 0 auto;
+  text-justify: auto;
 }
 
 .uniqueTable td,

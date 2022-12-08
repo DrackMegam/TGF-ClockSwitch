@@ -4,25 +4,25 @@
 
     <div class="container mb-4 mt-2">
       <form class="formularioPersona" id="formularioPersona">
-        <div class="form-outline mb-4">
-          <label class="form-label" for="">Trabajador</label>
+        <div class="form-outline text-center">
+          <label class="form-label"><span class="txtTrabajador">Datos del trabajador</span></label>
         </div>
         <div class="row mb-4">
           <div class="col">
             <div class="form-outline">
-              <label class="form-label" for="">Nombre</label>
+              <label class="sobretexto" for="">Nombre</label>
               <input readonly type="text" name="nombrePersona" class="form-control bg-dark text-white" />
             </div>
           </div>
           <div class="col-6">
             <div class="form-outline">
-              <label class="form-label" for="">Apellidos</label>
+              <label class="sobretexto" for="">Apellidos</label>
               <input readonly type="text" name="apellidosPersona" class="form-control bg-dark text-white" />
             </div>
           </div>
           <div class="col-3">
             <div class="form-outline">
-              <label class="form-label" for="">DNI</label>
+              <label class="sobretexto" for="">DNI</label>
               <input readonly type="text" name="dniPersona" class="form-control bg-dark text-white" />
             </div>
           </div>
@@ -30,23 +30,29 @@
         <div class="row mb-4">
           <div class="col-3">
             <div class="form-outline">
-              <label class="form-label" for="">Telefono</label>
+              <label class="sobretexto" for="">Telefono</label>
               <input readonly type="number" name="telefonoPersona" id="passUserForm"
                 class="form-control bg-dark text-white" />
             </div>
           </div>
           <div class="col">
             <div class="form-outline">
-              <label class="form-label" for="">Localidad</label>
+              <label class="sobretexto" for="">Localidad</label>
               <input readonly type="text" name="localidadPersona" class="form-control bg-dark text-white" />
             </div>
           </div>
         </div>
         <div class="form-outline mb-4">
-          <label class="form-label" for="">Descripcion</label>
-          <textarea name="descripcionPersona" class="form-control bg-dark text-white" rows="3"></textarea>
+          <label class="sobretexto" for="">Descripcion</label>
+          <textarea readonly name="descripcionPersona" class="form-control bg-dark text-white" rows="3"></textarea>
         </div>
       </form>
+    </div>
+
+    <div class="container" v-if="(dataReceived.length>0)">
+      <div class="form-outline text-center">
+          <label class="form-label"><span class="txtTrabajador">Usuarios asociados</span></label>
+        </div>
     </div>
 
     <template v-for="data in dataReceived">
@@ -55,22 +61,24 @@
           <div class="row mb-4">
             <div class="col">
               <div class="form-outline">
-                <label class="form-label" for="">Nombre Usuario</label>
+                <label class="sobretexto" for="">Nombre Usuario</label>
                 <input type="text" :value=data.username readonly name="nombreUsuario"
                   class="form-control bg-dark text-white" />
               </div>
             </div>
             <div class="col-2">
               <div class="form-outline">
-                <label class="form-label" for="">Identificador</label>
+                <label class="sobretexto" for="">Identificador</label>
                 <input type="number" :value=data.idUsuario readonly name="idUsuario"
                   class="form-control bg-dark text-white" />
               </div>
             </div>
             <div class="col-3">
               <div class="form-outline">
-                <label class="form-label" for="">Permisos</label>
-                <input type="text" :value=data.isAdmin readonly name="permisosUsuario"
+                <label class="sobretexto" for="">Permisos</label>
+                <input type="text" v-if="(data.isAdmin==1)" value="Administrador" readonly name="permisosUsuario"
+                  class="form-control bg-dark text-white" />
+                  <input type="text" v-else value="Trabajador" readonly name="permisosUsuario"
                   class="form-control bg-dark text-white" />
               </div>
             </div>
@@ -98,7 +106,7 @@ export default defineComponent({
   data() {
     return {
       dataReceived: [],
-      userId: 0, // mehamius = 10 | felix.roncero = 3
+      userId: 0, 
       uniqueDataReceived: {},
     };
   },
@@ -210,5 +218,18 @@ export default defineComponent({
   top: 0px;
   bottom: 200px;
   border: 1px solid red;
+}
+
+.txtTrabajador{
+  color:rgb(180, 54, 0);
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.sobretexto{
+  color:rgb(215, 89, 0);
+  font-weight: bold;
 }
 </style>
