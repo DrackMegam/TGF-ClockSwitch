@@ -410,11 +410,11 @@ export default defineComponent({
 }
 
 .btnSubmitPersonalizado {
-  background-color: rgb(20, 43, 44);
   font-weight: bolder;
   font-size: 18px;
-  color: black;
   width: 75%;
+  color: white;
+  background-color: rgb(215, 89, 0);
 }
 
 .uniqueTable {

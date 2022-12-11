@@ -198,6 +198,8 @@ export default defineComponent({
       $("#addTaskToWeek").css("display", "none");
       $("#btnAddTask").css("display", "block");
       $("#firstTask").css("display", "none");
+      $("#estadoNueva").val("");
+      $("#descripcionNueva").val("");
       this.getThisWeekSummary();
     },
     reloadSummary: function () {
@@ -418,6 +420,8 @@ export default defineComponent({
       });
     },
     updateHistory: function (idHistory) {
+      $("#estadoNueva").val("");
+      $("#descripcionNueva").val("");
       $("#weekSummary").css("display", "none");
       $("#addTaskToWeek").css("display", "none");
       let url = "https://localhost:44368/Semana/GetSingleHistoryToUpdate/" + idHistory;
@@ -520,6 +524,8 @@ export default defineComponent({
       });
     },
     updateFirstTaskAvailable: function () {
+      $("#estadoNueva").val("");
+      $("#descripcionNueva").val("");
       let url = "https://localhost:44368/Semana/AddTaskHistory/" + this.availableTaskId + "/" + this.userId + "/" + this.actualWeekOfYear + "/" + this.actualYear;
       this.contactarBack(url).then(() => {
         this.reloadSummary();

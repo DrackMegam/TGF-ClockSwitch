@@ -195,7 +195,6 @@ export default defineComponent({
 }
 
 .userWelcome {
-  padding-left: 5px;
   letter-spacing: 0px;
   font-weight: bold;
   color: rgb(180, 54, 0);
