@@ -1,6 +1,6 @@
 <template>
   <SidebarComponent :username=this.$route.params.username />
-  <div class="container main">
+  <div class="main">
 
     <div class="container mb-4 mt-2">
       <div class="form-outline text-center">
@@ -126,7 +126,7 @@ export default defineComponent({
   methods: {
     getUserId: async function (username) {
       try {
-        return fetch("https://localhost:44368/Login/GimmeId/" + username)
+        return fetch("https://83.33.245.0:8081/Login/GimmeId/" + username)
           .then((response) => response.json())
           .then((data) => {
             this.userId = data;
@@ -138,9 +138,9 @@ export default defineComponent({
       catch (e) { console.log(e) }
     },
     getProfileData: function () {
-      let url = "https://localhost:44368/Profile/GetOwner/" + this.userId;
+      let url = "https://83.33.245.0:8081/Profile/GetOwner/" + this.userId;
       this.recuperarDatoUnicoBack(url).then(() => {
-        let newUrl = "https://localhost:44368/Profile/GetPerson/" + this.uniqueDataReceived.dniPersona;
+        let newUrl = "https://83.33.245.0:8081/Profile/GetPerson/" + this.uniqueDataReceived.dniPersona;
         this.loadPersonData(newUrl);
       });
     },
@@ -157,7 +157,7 @@ export default defineComponent({
       });
     },
     loadUserData: function (dniPersona) {
-      let url = "https://localhost:44368/Profile/GetUsersOwned/" + dniPersona;
+      let url = "https://83.33.245.0:8081/Profile/GetUsersOwned/" + dniPersona;
       this.recuperarDatosBack(url).then(() => {
         let contador = 1;
 
@@ -213,13 +213,21 @@ export default defineComponent({
 @import url("../lib/toastr.js/toastr.min.css");
 
 .main {
+  display: fixed;
+  height: 100%;
+  width: 1500px;
+  top: 0;
+}
+
+.mainSubs {
   display: flex;
   flex-direction: column;
-  height: 900px;
+  top: 80px;
+  height: 100%;
   width: 1500px;
-  margin-left: 150px;
-  top: 0px;
-  bottom: 200px;
+  padding-bottom: 100px;
+  margin-left: 160px;
+  z-index: 0;
 }
 
 .txtTrabajador {

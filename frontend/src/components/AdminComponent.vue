@@ -197,7 +197,7 @@ export default defineComponent({
         $("#errorPersona").text("El nombre y los apellidos no pueden estar vacíos");
         $("#errorPersona").css("color", "red");
       } else {
-        let url = "https://localhost:44368/AdminPanel/AddPerson/" + dni + "/" + nombre + "/" + apellidos + "/" + descripcion + "/" + telefono + "/" + localidad;
+        let url = "https://83.33.245.0:8081/AdminPanel/AddPerson/" + dni + "/" + nombre + "/" + apellidos + "/" + descripcion + "/" + telefono + "/" + localidad;
         this.dataReceived.length = 0;
         this.contactarBack(url).then(() => {
           this.ocultarTodo();
@@ -208,7 +208,7 @@ export default defineComponent({
       this.ocultarTodo();
 
       let html = "";
-      let url = "https://localhost:44368/AdminPanel/GetPerson";
+      let url = "https://83.33.245.0:8081/AdminPanel/GetPerson";
       this.dataReceived.length = 0;
 
       $("#comboDnis").empty();
@@ -242,7 +242,7 @@ export default defineComponent({
         $("#errorUsuario").css("color", "red");
       } else {
         $("#errorUsuario").css("display", "none");
-        let url = "https://localhost:44368/AdminPanel/AddUser/" + dniVinculado + "/" + user + "/" + pass1 + "/" + admin;
+        let url = "https://83.33.245.0:8081/AdminPanel/AddUser/" + dniVinculado + "/" + user + "/" + pass1 + "/" + admin;
         this.dataReceived.length = 0;
         this.contactarBack(url).then(() => {
           this.ocultarTodo();
@@ -267,7 +267,7 @@ export default defineComponent({
         $("#errorTarea").text("El nombre de la tarea no puede estar vacío");
         $("#errorTarea").css("color", "red");
       } else {
-        let url = "https://localhost:44368/AdminPanel/AddTask/" + tarea + "/" + descripcion + "/" + estado;
+        let url = "https://83.33.245.0:8081/AdminPanel/AddTask/" + tarea + "/" + descripcion + "/" + estado;
         this.dataReceived.length = 0;
         console.log(url);
         this.contactarBack(url).then(() => {
@@ -287,7 +287,7 @@ export default defineComponent({
         "<th " + styleHeaderRow + " scope='col'>Localización</th>" +
         "<th " + styleHeaderRow + " scope='col'>Eliminar</th>" +
         "</tr>";
-      let url = "https://localhost:44368/AdminPanel/GetPerson";
+      let url = "https://83.33.245.0:8081/AdminPanel/GetPerson";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
         let styleRow = "";
@@ -328,7 +328,7 @@ export default defineComponent({
         "<th " + styleHeaderRow + " scope='col'>Usuario</th>" +
         "<th " + styleHeaderRow + " scope='col'>Eliminar</th>" +
         "</tr>";
-      let url = "https://localhost:44368/AdminPanel/GetUser/noAdmins";
+      let url = "https://83.33.245.0:8081/AdminPanel/GetUser/noAdmins";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
         let styleRow = "";
@@ -365,7 +365,7 @@ export default defineComponent({
         "<th  " + styleHeaderRow + " scope='col'>Usuario</th>" +
         "<th  " + styleHeaderRow + " scope='col'>Eliminar</th>" +
         "</tr>";
-      let url = "https://localhost:44368/AdminPanel/GetUser/admins";
+      let url = "https://83.33.245.0:8081/AdminPanel/GetUser/admins";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
         let styleRow = "";
@@ -403,7 +403,7 @@ export default defineComponent({
         "<th " + styleHeaderRow + " scope='col'>Estado</th>" +
         "<th " + styleHeaderRow + " scope='col'>Cancelar</th>" +
         "</tr>";
-      let url = "https://localhost:44368/AdminPanel/GetTask/all";
+      let url = "https://83.33.245.0:8081/AdminPanel/GetTask/all";
       this.dataReceived.length = 0;
       this.recuperarDatosBack(url).then(() => {
         let styleRow = "";
@@ -462,19 +462,19 @@ export default defineComponent({
       catch (e) { console.log(e) }
     },
     removePerson: async function (dniSeleccionado) {
-      let url = "https://localhost:44368/AdminPanel/RemovePerson/" + dniSeleccionado;
+      let url = "https://83.33.245.0:8081/AdminPanel/RemovePerson/" + dniSeleccionado;
       this.contactarBack(url).then(() => {
         this.ocultarTodo();
       });
     },
     removeUser: function (idUsuario) {
-      let url = "https://localhost:44368/AdminPanel/RemoveUser/" + idUsuario;
+      let url = "https://83.33.245.0:8081/AdminPanel/RemoveUser/" + idUsuario;
       this.contactarBack(url).then(() => {
         this.ocultarTodo();
       });
     },
     removeTask: function (tareaId) {
-      let url = "https://localhost:44368/AdminPanel/RemoveTask/" + tareaId;
+      let url = "https://83.33.245.0:8081/AdminPanel/RemoveTask/" + tareaId;
       this.contactarBack(url).then(() => {
         this.ocultarTodo();
       });
@@ -506,8 +506,10 @@ Naranja secundario: rgb(180, 54, 0)
 .main {
   display: flex;
   flex-direction: column;
-  height: 900px;
+  top: 80px;
+  height: 100%;
   width: 1500px;
+  padding-bottom: 100px;
 }
 
 .top {

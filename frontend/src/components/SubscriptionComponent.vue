@@ -114,7 +114,7 @@ export default defineComponent({
   methods: {
     getUserId: async function (username) {
       try {
-        return fetch("https://localhost:44368/Login/GimmeId/" + username)
+        return fetch("https://83.33.245.0:8081/Login/GimmeId/" + username)
           .then((response) => response.json())
           .then((data) => {
             this.userId = data;
@@ -127,7 +127,7 @@ export default defineComponent({
     },
     getTimeData: async function () {
       try {
-        return fetch("https://localhost:44368/Semana/GetTimeData")
+        return fetch("https://83.33.245.0:8081/Semana/GetTimeData")
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
@@ -182,13 +182,13 @@ export default defineComponent({
       this.getDateOfWeek(this.actualWeekOfYear, this.actualYear);
     },
     getSubscriptions: function () {
-      let url = "https://localhost:44368/Subscription/GetAvailableSubscriptions/" + this.userId;
+      let url = "https://83.33.245.0:8081/Subscription/GetAvailableSubscriptions/" + this.userId;
       this.recuperarAvailableSubs(url).then(() => { });
-      url = "https://localhost:44368/Subscription/GetCurrentSubscriptions/" + this.userId;
+      url = "https://83.33.245.0:8081/Subscription/GetCurrentSubscriptions/" + this.userId;
       this.recuperarCurrentSubs(url).then(() => { this.loadSubsData(); });
     },
     loadSubsData: function () {
-      let url = "https://localhost:44368/Subscription/GetSubsData/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
+      let url = "https://83.33.245.0:8081/Subscription/GetSubsData/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       let html = "";
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
@@ -256,7 +256,7 @@ export default defineComponent({
     },
     suscribeDone: async function (ids) {
       ids.forEach((id) => {
-        let url = "https://localhost:44368/Subscription/Suscribe/" + this.userId + "/" + id;
+        let url = "https://83.33.245.0:8081/Subscription/Suscribe/" + this.userId + "/" + id;
         this.recuperarDatoUnicoBack(url).then(() => { });
       });
     },
@@ -274,7 +274,7 @@ export default defineComponent({
     },
     unsuscribeDone: async function (ids) {
       ids.forEach((id) => {
-        let url = "https://localhost:44368/Subscription/Unsuscribe/" + this.userId + "/" + id;
+        let url = "https://83.33.245.0:8081/Subscription/Unsuscribe/" + this.userId + "/" + id;
         this.recuperarDatoUnicoBack(url).then(() => { });
       });
     },
@@ -370,10 +370,21 @@ export default defineComponent({
 .mainSubs {
   display: flex;
   flex-direction: column;
-  height: 900px;
+  top: 80px;
+  height: 100%;
   width: 1500px;
+  padding-bottom: 100px;
   margin-left: 160px;
   z-index: 0;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  top: 80px;
+  height: 100%;
+  width: 1500px;
+  padding-bottom: 100px;
 }
 
 .subscriptionsData {

@@ -41,7 +41,7 @@ export default defineComponent({
     async login() {
       console.log("Intentando loggear al usuario " + user.value + " con password: " + password.value);
       try {
-        fetch("https://localhost:44368/Login/" + user.value + "/" + password.value)
+        fetch("https://83.33.245.0:8081/Login/" + user.value + "/" + password.value)
           .then((response) => response.json())
           .then((data) => {
             this.loggedIn = data;

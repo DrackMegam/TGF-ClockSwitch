@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hQ3a1mqDhgpV5ma+I1KN7QrLjSdOJbu1h5vhIXN3SzrQRLcwd1QwW5QAMYA8YDLZLRwmfgXM0MeIGnZ4FKPd+Q==",
+  "dgSpecHash": "GjzLdLV3GqI1ZIMpP3WTFocuFty3wVEfWKuPfKoHpFv5SZG6AOSkkK5966Mo4gLmI9TBSeV2HjpJ0bw8Ws3+2g==",
   "success": true,
   "projectFilePath": "C:\\TGF-ClockSwitch\\backend\\ClockSwitch_Backend\\ClockSwitch_Backend.csproj",
   "expectedPackageFiles": [
@@ -24,6 +24,7 @@
     "C:\\Users\\DrackMegam\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
     "C:\\Users\\DrackMegam\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\DrackMegam\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\DrackMegam\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.17.0\\microsoft.visualstudio.azure.containers.tools.targets.1.17.0.nupkg.sha512",
     "C:\\Users\\DrackMegam\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\DrackMegam\\.nuget\\packages\\mysql.data\\8.0.31\\mysql.data.8.0.31.nupkg.sha512",
     "C:\\Users\\DrackMegam\\.nuget\\packages\\mysql.entityframeworkcore\\6.0.7\\mysql.entityframeworkcore.6.0.7.nupkg.sha512",

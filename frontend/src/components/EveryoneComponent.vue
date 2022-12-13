@@ -51,7 +51,7 @@ export default defineComponent({
   methods: {
     getUserId: async function (username) {
       try {
-        return fetch("https://localhost:44368/Login/GimmeId/" + username)
+        return fetch("https://83.33.245.0:8081/Login/GimmeId/" + username)
           .then((response) => response.json())
           .then((data) => {
             this.userId = data;
@@ -104,7 +104,7 @@ export default defineComponent({
     },
     getTimeData: async function () {
       try {
-        return fetch("https://localhost:44368/Semana/GetTimeData")
+        return fetch("https://83.33.245.0:8081/Semana/GetTimeData")
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
@@ -119,7 +119,7 @@ export default defineComponent({
       catch (e) { console.log(e) }
     },
     getAllHours: function () {
-      let url = "https://localhost:44368/Everyone/AllHours/" + this.actualYear + "/" + this.actualWeekOfYear;
+      let url = "https://83.33.245.0:8081/Everyone/AllHours/" + this.actualYear + "/" + this.actualWeekOfYear;
       console.log(url);
       this.dataReceived.length=0;
       this.recuperarDatosBack(url).then(() => {

@@ -224,7 +224,7 @@ export default defineComponent({
     },
     getTimeData: async function () {
       try {
-        return fetch("https://localhost:44368/Semana/GetTimeData")
+        return fetch("https://83.33.245.0:8081/Semana/GetTimeData")
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
@@ -241,7 +241,7 @@ export default defineComponent({
     },
     getUserId: async function (username) {
       try {
-        return fetch("https://localhost:44368/Login/GimmeId/" + username)
+        return fetch("https://83.33.245.0:8081/Login/GimmeId/" + username)
           .then((response) => response.json())
           .then((data) => {
             this.userId = data;
@@ -260,7 +260,7 @@ export default defineComponent({
       let onejan = new Date(now.getFullYear(), 0, 1);
       let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
       */
-      let url = "https://localhost:44368/Semana/GetMoreTasks/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
+      let url = "https://83.33.245.0:8081/Semana/GetMoreTasks/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       this.dataReceived.length = 0;
       $("#newTasksCombo").empty();
       $("#newTasksCombo").append('<option selected value="0">- Vacío -</option>');
@@ -283,7 +283,7 @@ export default defineComponent({
       let onejan = new Date(now.getFullYear(), 0, 1);
       let thisWeek = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7) - 1; // Para ajustarlo al horario ibérico
       */
-      let url = "https://localhost:44368/Semana/WeekSummary/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
+      let url = "https://83.33.245.0:8081/Semana/WeekSummary/" + this.userId + "/" + this.actualYear + "/" + this.actualWeekOfYear;
       console.log(url);
       this.recuperarDatosBack(url).then(() => {
         if (this.dataReceived[0].ano == 1928) {
@@ -296,7 +296,7 @@ export default defineComponent({
     showFirstTaskForm: function () {
       console.log("Esta semana no tiene historial.");
       // Recupero las tareas que NO estén canceladas.
-      let url = "https://localhost:44368/Semana/GetAvailableTask";
+      let url = "https://83.33.245.0:8081/Semana/GetAvailableTask";
       this.dataReceived.length = 0;
       $("#availableTasksCombo").empty();
       $("#availableTasksCombo").append('<option selected value="0">- Vacío -</option>');
@@ -320,7 +320,7 @@ export default defineComponent({
     showThisWeekSummary: async function (year, weekOfYear) {
       console.log("Historial encontrado.");
       // Hago otra petición, pero esta vez para que me devuelva también los nombres y estados de las tareas.
-      let url = "https://localhost:44368/Semana/WeekFullSummary/" + this.userId + "/" + year + "/" + weekOfYear;
+      let url = "https://83.33.245.0:8081/Semana/WeekFullSummary/" + this.userId + "/" + year + "/" + weekOfYear;
       this.dataReceived = [];
       this.recuperarDatosBack(url).then(() => {
         console.log(this.dataReceived);
@@ -424,7 +424,7 @@ export default defineComponent({
       $("#descripcionNueva").val("");
       $("#weekSummary").css("display", "none");
       $("#addTaskToWeek").css("display", "none");
-      let url = "https://localhost:44368/Semana/GetSingleHistoryToUpdate/" + idHistory;
+      let url = "https://83.33.245.0:8081/Semana/GetSingleHistoryToUpdate/" + idHistory;
       console.log(url);
 
       this.recuperarDatoUnicoBack(url).then(() => {
@@ -480,7 +480,7 @@ export default defineComponent({
             sabado: $("input[name=sabado]").val(),
             domingo: $("input[name=domingo]").val(),
           }
-          let urlUpdate = "https://localhost:44368/Semana/UpdateHistory/" + idHistory + "/" + updatedHours.lunes + "/" + updatedHours.martes + "/" + updatedHours.miercoles + "/" + updatedHours.jueves + "/" + updatedHours.viernes + "/" + updatedHours.sabado + "/" + updatedHours.domingo;
+          let urlUpdate = "https://83.33.245.0:8081/Semana/UpdateHistory/" + idHistory + "/" + updatedHours.lunes + "/" + updatedHours.martes + "/" + updatedHours.miercoles + "/" + updatedHours.jueves + "/" + updatedHours.viernes + "/" + updatedHours.sabado + "/" + updatedHours.domingo;
           console.log(urlUpdate);
           vueContext.recuperarDatoUnicoBack(urlUpdate).then(() => {
             console.log("Actualizado");
@@ -493,7 +493,7 @@ export default defineComponent({
     updateAvailableTasksInfo: function () {
       var selectedAvailableTask = $('#availableTasksCombo').find(":selected").val();
       console.log(selectedAvailableTask);
-      let url = "https://localhost:44368/Semana/GetSingleTask/" + selectedAvailableTask;
+      let url = "https://83.33.245.0:8081/Semana/GetSingleTask/" + selectedAvailableTask;
       this.updateCurrentAvailableTask(url).then(() => {
         $("#descripcionPrimera").val(this.availableDescription);
         $("#estadoPrimera").val(this.availableStatus);
@@ -510,7 +510,7 @@ export default defineComponent({
     updateNewTasksInfo: function () {
       var selectedNewTask = $('#newTasksCombo').find(":selected").val();
       console.log(selectedNewTask);
-      let url = "https://localhost:44368/Semana/GetSingleTask/" + selectedNewTask;
+      let url = "https://83.33.245.0:8081/Semana/GetSingleTask/" + selectedNewTask;
       this.updateCurrentAvailableTask(url).then(() => {
         $("#descripcionNueva").val(this.availableDescription);
         $("#estadoNueva").val(this.availableStatus);
@@ -526,7 +526,7 @@ export default defineComponent({
     updateFirstTaskAvailable: function () {
       $("#estadoNueva").val("");
       $("#descripcionNueva").val("");
-      let url = "https://localhost:44368/Semana/AddTaskHistory/" + this.availableTaskId + "/" + this.userId + "/" + this.actualWeekOfYear + "/" + this.actualYear;
+      let url = "https://83.33.245.0:8081/Semana/AddTaskHistory/" + this.availableTaskId + "/" + this.userId + "/" + this.actualWeekOfYear + "/" + this.actualYear;
       this.contactarBack(url).then(() => {
         this.reloadSummary();
       });
@@ -615,6 +615,7 @@ export default defineComponent({
 .main {
   display: flex;
   flex-direction: column;
+  top: 75px;
   height: 900px;
   width: 1500px;
 }

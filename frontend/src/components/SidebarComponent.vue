@@ -78,7 +78,7 @@ export default defineComponent({
   methods: {
     showAdminOptions: function () {
       try {
-        return fetch("https://localhost:44368/Login/AmIAdmin/" + this.username)
+        return fetch("https://83.33.245.0:8081/Login/AmIAdmin/" + this.username)
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
