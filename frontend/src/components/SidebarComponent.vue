@@ -11,33 +11,33 @@
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mi resumen semanal">
           <a class="nav-link">
             <i class="fa fa-fw fa-table"></i>
-            <span @click="weekTime()" class="nav-link-text">Mi resumen semanal</span>
+            <span @click="weekTime()" class="nav-link-text">Resumen Semanal</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Horas de Todos">
           <a class="nav-link">
             <i class="fa fa-fw fa-table"></i>
-            <span @click="goEveryone()" class="nav-link-text">Horas de todos</span>
+            <span @click="goEveryone()" class="nav-link-text">Horas de Todos</span>
           </a>
         </li>
         <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right"
           title="Panel de administrador">
           <a class="nav-link">
             <i class="fa fa-user-plus"></i>
-            <span @click="goAdmin()" class="nav-link-text">Panel de administrador</span>
+            <span @click="goAdmin()" class="nav-link-text">Panel de Administrador</span>
           </a>
         </li>
         <li v-if="(isAdmin == 1)" class="nav-item" data-toggle="tooltip" data-placement="right"
           title="Mis Subscripciones">
           <a class="nav-link">
             <i class="fa fa-users"></i>
-            <span @click="goSubs()" class="nav-link-text">Mis Subscripciones</span>
+            <span @click="goSubs()" class="nav-link-text">Mis Suscripciones</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Mi perfil">
           <a class="nav-link">
             <i class="fa fa-users"></i>
-            <span @click="goProfile()" class="nav-link-text">Mi perfil</span>
+            <span @click="goProfile()" class="nav-link-text">Mi Perfil</span>
           </a>
         </li>
       </ul>

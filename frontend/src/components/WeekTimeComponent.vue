@@ -452,7 +452,7 @@ export default defineComponent({
 
         // Atención, una cosa es el idTarea, y otra id, que es de la entrada al historial.
         let styleText = "style='text-align: left;font-size:15px;padding-left:10px;padding-right:15px;'";
-        let styleInputNumber = "style='width:30px;font-size:20px;background-color:rgb(20, 43, 44);color:rgb(215, 89, 0);'";
+        let styleInputNumber = "style='width:60px;font-size:20px;background-color:rgb(20, 43, 44);color:rgb(215, 89, 0);'";
         html += "<tbody>" +
           "<tr " + styleRow + "><th scope='row'>" + this.uniqueDataReceived.idTarea + "</th>" +
           "<td " + styleText + ">" + this.uniqueDataReceived.nombreTarea + "</td>" +
@@ -736,5 +736,11 @@ export default defineComponent({
   font-size: 25px;
   letter-spacing: 2px;
   color: rgb(215, 89, 0);
+}
+/*https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>
