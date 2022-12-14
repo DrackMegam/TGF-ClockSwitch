@@ -125,7 +125,7 @@ img {
 }
 
 .principal {
-  margin-left: 450px;
+  margin-left: 410px;
 }
 
 .top-header {
